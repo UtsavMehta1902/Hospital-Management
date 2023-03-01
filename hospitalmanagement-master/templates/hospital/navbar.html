@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load static %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+  }
+
+  header {
+    background: #00425A;
+    padding: 1em 0;
+  }
+
+  .logo {
+    text-decoration: none !important;
+    color: #FC7300 !important;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 5rem 0 2rem;
+    width: 30rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 85rem;
+    margin: 0 auto;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .navbar {
+    display: inline-block;
+    justify-content: space-between;
+    width: 40rem;
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    width: auto;
+    padding: 0;
+    margin: 0 3rem;
+    list-style: none;
+  }
+
+  .nav__link {
+    margin-left: 0.5em;
+    padding: 1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin: 0 0.7rem;
+    color: #FC7300;
+  }
+
+  .nav__list--primary {
+    margin: 0 auto;
+    color: #FC7300;
+  }
+
+  .nav__link:hover {
+    color: black !important;
+    background-color: rgb(211, 211, 211);
+    border-radius: 0.2rem;
+  }
+
+  .nav__item {
+    margin-top: 0.4rem;
+  }
+</style>
+
+<header>
+  <div class="container row">
+    <a href="/" class="logo">Hospital Management</a>
+    <nav class="navbar">
+      <ul class="nav__list nav__list--primary">
+        <li class="nav__item">
+          <a href="/adminclick" class="nav__link">Admin</a>
+        </li>
+        <li class="nav__item">
+          <a href="/doctorclick" class="nav__link">Doctor</a>
+        </li>
+        <li class="nav__item">
+          <a href="/patientclick" class="nav__link">Patient</a>
+        </li>
+        <li class="nav__item">
+          <a href="/aboutus" class="nav__link">About Us</a>
+        </li>
+        <li class="nav__item">
+          <a href="/contactus" class="nav__link">Contact Us</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
