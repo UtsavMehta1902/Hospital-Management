@@ -90,7 +90,7 @@ class Appointment(models.Model):
 
 class Prescription(models.Model):
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL)
+    doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL, null=True)
     medicine_name = models.CharField(max_length=50)
     medicine_description = models.TextField(max_length=500, blank=True, default='')
 
@@ -102,7 +102,7 @@ class Room(models.Model):
 
 class Test_Results(models.Model):
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
-    doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL)
+    doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL, null=True)
     test_name = models.CharField(max_length=100)
     test_results = models.TextField(max_length=500, null=True, blank=True, default=None)
     image_results = models.ImageField(upload_to='Test_Results/', null=True, blank=True, default=None)

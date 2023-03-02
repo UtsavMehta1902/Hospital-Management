@@ -37,7 +37,8 @@ def login_doctor(request):
 @login_required(login_url='doctorlogin')
 def doctor_dashboard(request):
     context = {
-        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
+        'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
     }
     return render(request, 'hospital/doctor_dashboard.html', context)
 
@@ -60,21 +61,18 @@ def login_frontdesk(request):
 @login_required(login_url='frontdesklogin')
 def frontdesk_dashboard(request):
     context = {
-        'frontdesk': models.DB_User.objects.get(user=request.user, type='FrontDesk'),
+        'frontdesk.user.id' : models.DB_User.objects.get(user=request.user, type='FrontDesk').get_id,
+        'frontdesk.name': models.DB_User.objects.get(user=request.user, type='FrontDesk').get_name,
     }
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        name = request.POST.get('name')
         address = request.POST.get('address')
         mobile = request.POST.get('mobile')
-        assignedDoctor = request.POST.get('assignedDoctor')
 
         patient = models.Patient.objects.create(
-            first_name=first_name,
-            last_name=last_name,
+            name=name,
             address=address,
             mobile=mobile,
-            assignedDoctorId=assignedDoctor
         )        
         patient.save()
         messages.success(request, 'Patient added successfully')
@@ -118,17 +116,17 @@ def dataentry_dashboard(request):
 def logout_doctor(request):
     logout(request)
     messages.success(request, 'You have been logged out')
-    return redirect('doctorlogin')
+    return redirect('')
 
 def logout_frontdesk(request):
     logout(request)
     messages.success(request, 'You have been logged out')
-    return redirect('frontdesklogin')
+    return redirect('')
 
 def logout_dataentry(request):
     logout(request)
     messages.success(request, 'You have been logged out')
-    return redirect('dataentrylogin')
+    return redirect('')
 
 
 #for showing signup/login button for admin(by sumit)
