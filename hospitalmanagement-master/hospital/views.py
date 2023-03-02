@@ -13,6 +13,11 @@ from django.db.models import Q
 
 # Create your views here.
 
+def home_view(request):
+    # if request.user.is_authenticated:
+    #     return HttpResponseRedirect('afterlogin')
+    return render(request,'hospital/index.html')
+
 def login_doctor(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -33,7 +38,6 @@ def login_doctor(request):
 def doctor_dashboard(request):
     context = {
         'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-        'patients': models.Patient.objects.filter(assignedDoctorId=request.user.id),
     }
     return render(request, 'hospital/doctor_dashboard.html', context)
 
@@ -57,7 +61,6 @@ def login_frontdesk(request):
 def frontdesk_dashboard(request):
     context = {
         'frontdesk': models.DB_User.objects.get(user=request.user, type='FrontDesk'),
-        'patients': models.Patient.objects.all(),
     }
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -112,34 +115,49 @@ def dataentry_dashboard(request):
         return redirect('dataentry_dashboard')
     return render(request, 'hospital/dataentry_dashboard.html', context)
 
+def logout_doctor(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('doctorlogin')
 
+def logout_frontdesk(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('frontdesklogin')
 
-
-def home_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/index.html')
+def logout_dataentry(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('dataentrylogin')
 
 
 #for showing signup/login button for admin(by sumit)
-def adminclick_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/adminclick.html')
+# def adminclick_view(request):
+#     if request.user.is_authenticated:
+#         return HttpResponseRedirect('afterlogin')
+#     return render(request,'hospital/adminclick.html')
 
 
 #for showing signup/login button for doctor(by sumit)
 def doctorclick_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/doctorclick.html')
+        if models.DB_User.objects.get(user=request.user, type='Doctor'):
+            return HttpResponseRedirect('doctor_dashboard')
+    return redirect('doctorlogin')
 
 
 #for showing signup/login button for patient(by sumit)
-def patientclick_view(request):
+def frontdeskclick_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/patientclick.html')
+        if models.DB_User.objects.get(user=request.user, type='FrontDesk'):
+            return HttpResponseRedirect('frontdesk_dashboard')
+    return redirect('frontdesklogin')
+
+def dataentryclick_view(request):
+    if request.user.is_authenticated:
+        if models.DB_User.objects.get(user=request.user, type='DataEntry'):
+            return HttpResponseRedirect('dataentry_dashboard')
+    return redirect('dataentrylogin')
 
 
 

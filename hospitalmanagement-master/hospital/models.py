@@ -52,7 +52,6 @@ class Patient(models.Model):
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20)
     # symptoms = models.CharField(max_length=100,null=False)
-    assignedDoctor = models.ManyToManyField('DB_User', related_name='assignedDoctor')
     roomNumber = models.ForeignKey('Room', on_delete=models.SET_NULL,null=True, default=None)
     admitDate = models.DateField(null=True, default=None)
     dischargeDate = models.DateField(null=True, default=None)
@@ -70,7 +69,7 @@ class Patient(models.Model):
 class Appointment(models.Model):
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
     doctor = models.ForeignKey('DB_User', on_delete=models.CASCADE)
-    appointmentDate = models.DateField(auto_now=True)
+    appointmentDateTime = models.DateTimeField(null=True, default=None)
     description = models.TextField(max_length=500, blank=True, default='')
 
 
@@ -107,7 +106,7 @@ class Test_Results(models.Model):
     test_name = models.CharField(max_length=100)
     test_results = models.TextField(max_length=500, null=True, blank=True, default=None)
     image_results = models.ImageField(upload_to='Test_Results/', null=True, blank=True, default=None)
-    test_slot = models.DateTimeField(null=True, blank=True, default=None)
+    test_slot = models.DateTimeField(null=True, default=None)
 
     @property
     def get_test_results(self):
