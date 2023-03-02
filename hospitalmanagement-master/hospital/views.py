@@ -1,5 +1,7 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
+from django.contrib.auth import authenticate,login,logout
+from django.contrib import messages
 from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
@@ -10,6 +12,109 @@ from django.conf import settings
 from django.db.models import Q
 
 # Create your views here.
+
+def login_doctor(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            db_user = models.DB_User.objects.get(user=user, type='Doctor')
+            if db_user is not None:
+                login(request, user)
+                return redirect('doctor_dashboard')
+            else:
+                messages.error(request, 'You are not a doctor')
+        else:
+            messages.error(request, 'Invalid credentials')
+    return render(request, 'hospital/doctor_login.html')
+
+@login_required(login_url='doctorlogin')
+def doctor_dashboard(request):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': models.Patient.objects.filter(assignedDoctorId=request.user.id),
+    }
+    return render(request, 'hospital/doctor_dashboard.html', context)
+
+def login_frontdesk(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            db_user = models.DB_User.objects.get(user=user, type='FrontDesk')
+            if db_user is not None:
+                login(request, user)
+                return redirect('frontdesk_dashboard')
+            else:
+                messages.error(request, 'You are not a frontdesk operator')
+        else:
+            messages.error(request, 'Invalid credentials')
+    return render(request, 'hospital/frontdesk_login.html')
+
+@login_required(login_url='frontdesklogin')
+def frontdesk_dashboard(request):
+    context = {
+        'frontdesk': models.DB_User.objects.get(user=request.user, type='FrontDesk'),
+        'patients': models.Patient.objects.all(),
+    }
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        address = request.POST.get('address')
+        mobile = request.POST.get('mobile')
+        assignedDoctor = request.POST.get('assignedDoctor')
+
+        patient = models.Patient.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            address=address,
+            mobile=mobile,
+            assignedDoctorId=assignedDoctor
+        )        
+        patient.save()
+        messages.success(request, 'Patient added successfully')
+        return redirect('frontdesk_dashboard')
+    return render(request, 'hospital/frontdesk_dashboard.html', context)
+
+def login_dataentry(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            db_user = models.DB_User.objects.get(user=user, type='DataEntry')
+            if db_user is not None:
+                login(request, user)
+                return redirect('dataentry_dashboard')
+            else:
+                messages.error(request, 'You are not a data entry operator')
+        else:
+            messages.error(request, 'Invalid credentials')
+    return render(request, 'hospital/dataentry_login.html')
+
+@login_required(login_url='dataentrylogin')
+def dataentry_dashboard(request):
+    context = {
+        'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
+        'patients': models.Patient.objects.all(),
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        test_name = request.POST.get('test_name')
+        test = models.Test_Results.objects.get(patientId=patientId, test_name=test_name)
+        test.test_results = request.POST.get('test_result')
+        test.image_results = request.FILES.get('image_results')
+        test.save()
+            
+        messages.success(request, 'Patient test results added successfully')
+        return redirect('dataentry_dashboard')
+    return render(request, 'hospital/dataentry_dashboard.html', context)
+
+
+
+
 def home_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
