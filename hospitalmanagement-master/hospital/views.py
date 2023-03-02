@@ -161,7 +161,7 @@ def admin_dashboard_view(request):
     'appointmentcount':appointmentcount,
     'pendingappointmentcount':pendingappointmentcount,
     }
-    return render(request,'hospital/admin_dashboard.html',context=mydict)
+    return render(request,'hospital/admin-dashboard.html',context=mydict)
 
 
 # this view for sidebar click on admin page
