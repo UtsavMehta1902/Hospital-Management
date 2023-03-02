@@ -70,7 +70,7 @@ class Patient(models.Model):
 class Appointment(models.Model):
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
     doctor = models.ForeignKey('DB_User', on_delete=models.CASCADE)
-    appointmentDate = models.DateField(auto_now=True)
+    appointmentDateSlot = models.DateTimeField(null=True,default=None)
     description = models.TextField(max_length=500, blank=True, default='')
 
 

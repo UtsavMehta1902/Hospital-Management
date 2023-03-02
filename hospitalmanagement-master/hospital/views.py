@@ -10,7 +10,9 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date
 from django.conf import settings
 from django.db.models import Q
+import datetime
 
+slots = [()]
 # Create your views here.
 
 def login_doctor(request):
@@ -113,6 +115,88 @@ def dataentry_dashboard(request):
     return render(request, 'hospital/dataentry_dashboard.html', context)
 
 
+#---------Front Desk Operator Views----------#
+# Schedule appoinment for a patient by front desk operator among available doctors
+# def schedule_appointment(request):
+#     if request.method == 'POST':
+#         patientId = request.POST.get('patientId')
+#         assignedDoctor = request.POST.get('assignedDoctor')
+#         appointment_date = request.POST.get('appointment_date')
+#         appointment_time = request.POST.get('appointment_time')
+#         patient = models.Patient.objects.get(id=patientId)
+#         patient.assignedDoctorId = assignedDoctor
+#         patient.appointment_date = appointment_date
+#         patient.appointment_time = appointment_time
+#         patient.save()
+#         messages.success(request, 'Appointment scheduled successfully')
+#         return redirect('frontdesk_dashboard')
+#     return render(request, 'hospital/frontdesk_dashboard.html')
+
+def schedule_appointment(request):
+    # In context also add slot availability for each doctor by calling a function
+    doctors = models.DB_User.objects.filter(type='Doctor')
+    new_doc = []
+    for doctor in doctors:
+        temp_new_doc = {
+        "doctor.user.id" : doctor.user.id,
+        "doctor.name" : doctor.user.first_name+" "+doctor.user.last_name,
+        "SLOT": available_slots(doctor)}
+        new_doc.append(temp_new_doc)
+    
+    # Now add the new_doc to context
+    context = {
+        'patients': models.Patient.objects.all(),
+        'doctors': new_doc
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        assignedDoctor = request.POST.get('assignedDoctor')
+        appointment_date_slot = request.POST.get('appointmentDateSlot')
+        description = request.POST.get('description')
+        # Save the appointment in the database
+        appointment = models.Appointment.objects.create(
+            patient=patientId,
+            doctor=assignedDoctor,
+            appointmentDateSlot=appointment_date_slot,
+            description=description
+        )
+        appointment.save()
+
+        messages.success(request, 'Appointment scheduled successfully')
+        return redirect('frontdesk_dashboard/schedule_appointment')
+
+    return render(request, 'hospital/frontdesk_dashboard/schedule_appointment.html', context)
+
+def available_slots(doctor):
+    # Get all appointments of the doctor
+    appointments = models.Appointment.objects.filter(assignedDoctorId=doctor.id)
+    # Get today Date from system
+    today = datetime.datetime.today().replace(microsecond=0)
+    next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
+    available_slots = []
+
+    for i in range(8,18):
+        # Create a datetime object for each slot
+        slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
+        # Check if the slot is in the future
+        if slot > today:
+            # Check if the slot is already booked
+            if not appointments.filter(appointmentDateSlot=slot).exists():
+                available_slots.append(slot)
+    for i in range(8,18):
+        # Create a datetime object for each slot
+        slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
+        # Check if the slot is in the future
+        if slot > today:
+            # Check if the slot is already booked
+            if not appointments.filter(appointmentDateSlot=slot).exists():
+                available_slots.append(slot)
+    
+    # If size of available slots greater than 5 then return only 5 slots
+    if len(available_slots) > 5:
+        return available_slots[:5]
+    
+    return available_slots
 
 
 def home_view(request):
