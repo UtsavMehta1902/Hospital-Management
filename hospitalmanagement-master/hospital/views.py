@@ -108,7 +108,7 @@ def dataentry_dashboard(request):
         test.image_results = request.FILES.get('image_results')
         test.save()
             
-        messages.success(request, 'Patient data added successfully')
+        messages.success(request, 'Patient test results added successfully')
         return redirect('dataentry_dashboard')
     return render(request, 'hospital/dataentry_dashboard.html', context)
 
