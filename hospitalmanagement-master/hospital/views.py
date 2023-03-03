@@ -161,7 +161,7 @@ def admin_dashboard_view(request):
     'appointmentcount':appointmentcount,
     'pendingappointmentcount':pendingappointmentcount,
     }
-    return render(request,'hospital/admin-dashboard.html',context=mydict)
+    return render(request,'hospital/doctor-dashboard.html',context=mydict)
 
 
 # this view for sidebar click on admin page
@@ -585,7 +585,7 @@ def doctor_dashboard_view(request):
     'appointments':appointments,
     'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
     }
-    return render(request,'hospital/doctor_dashboard.html',context=mydict)
+    return render(request,'hospital/doctor-dashboard.html',context=mydict)
 
 
 
