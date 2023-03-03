@@ -32,7 +32,7 @@ urlpatterns = [
 
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
-    path('patient/<int:id>', views.patient_view,name='patient'),
+    path('patient/<int:patient_id>', views.doctor_view_patient,name='patient'),
 
     path('admin-doctor', views.admin_doctor_view,name='admin-doctor'),
     path('admin-view-doctor', views.admin_view_doctor_view,name='admin-view-doctor'),
@@ -68,7 +68,7 @@ urlpatterns = [
 
 #---------FOR DOCTOR RELATED URLS-------------------------------------
 urlpatterns +=[
-    path('doctor-dashboard', views.doctor_dashboard_view,name='doctor-dashboard'),
+    path('doctor-dashboard', views.doctor_dashboard,name='doctor-dashboard'),
     path('search', views.search_view,name='search'),
 
     path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),

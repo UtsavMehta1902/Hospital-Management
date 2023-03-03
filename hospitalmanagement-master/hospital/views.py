@@ -43,13 +43,13 @@ def login_doctor(request):
             messages.error(request, 'Invalid credentials')
     return render(request, 'hospital/doctor_login.html')
 
-@login_required(login_url='doctorlogin')
-def doctor_dashboard(request):
-    context = {
-        'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
-        'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
-    }
-    return render(request, 'hospital/doctor_dashboard.html', context)
+# @login_required(login_url='doctorlogin')
+# def doctor_dashboard(request):
+#     context = {
+#         'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
+#         'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
+#     }
+#     return render(request, 'hospital/doctor_dashboard.html', context)
 
 def login_frontdesk(request):
     if request.method == 'POST':
@@ -206,11 +206,14 @@ def available_slots(doctor):
 
 # doctor dashboard functionality to view all patients treated by him
 def doctor_dashboard(request):
+    doctor12 = models.DB_User.objects.get(id=6)
+    appointments = models.Appointment.objects.filter(doctor=doctor12)
+    patients = [appointment.patient for appointment in appointments]
     context = {
-        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-        'patients': models.Patient.objects.get(doctor=request.user),
+        # 'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': patients,
     }
-    return render(request, 'hospital/doctor_dashboard.html', context)
+    return render(request, 'hospital/doctor-dashboard.html', context)
 
 # doctor dashboard functionality to prescribe medicine and add it to model Prescription 
 def doctor_prescribe_medicine(request):
@@ -256,13 +259,14 @@ def doctor_prescribe_test(request):
 
 # doctor dashboard functionality to view all information of a patient
 def doctor_view_patient(request, patient_id):
+    doctor12 = models.DB_User.objects.get(id=6)
     context = {
-        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-        'patient': models.Patient.objects.get(id=patient_id),
+        'doctor': doctor12,
+        'patient': models.Patient.objects.get(patientId=patient_id),
         'prescriptions': models.Prescription.objects.filter(patient=patient_id),
         'test_results': models.Test_Results.objects.filter(patient=patient_id),
     }
-    return render(request, 'hospital/doctor_dashboard/view_patient.html', context)
+    return render(request, 'hospital/doctor_view_patient.html', context)
 
 # for showing signup/login button for admin(by sumit)
 def adminclick_view(request):
