@@ -1,2 +1,5 @@
-webenv
 env
+hospitalmanagement-master/db.sqlite3
+hospitalmanagement-master/hospital/__pycache__
+hospitalmanagement-master/hospital/migrations
+hospitalmanagement-master/hospitalmanagement/__pycache__
