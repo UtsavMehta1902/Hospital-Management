@@ -14,8 +14,11 @@
       type="text/css"
       href="{% static 'styles/dashboard-base.css' %}"
     />
-  </head>
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+  </head>
+  
   <body>
     <div class="option">
       <div class="logo">
@@ -30,15 +33,15 @@
       <div class="name"><button>Utsav Mehta</button></div>
       <div class="clear"></div>
       <ul class="menu">
-        <a href="">
+        <a href="" onclick=window.location.pathname('admin-dashboard')>
           <i class="fa fa-dashboard"></i>
             Dashboard
         </a>
         <br />
-        <a href="">
+        <!-- <a href="doctor-patients">
           <i class="fa-solid fa-person-circle-plus"></i>
             Patients
-        </a>
+        </a> -->
       </ul>
       <div class="info">
         <p class="tagline"><i class="fas fa-phone"></i>&nbsp;&nbsp; +91 9328209239</p>
