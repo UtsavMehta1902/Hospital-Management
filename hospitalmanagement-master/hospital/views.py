@@ -12,7 +12,6 @@ from django.conf import settings
 from django.db.models import Q
 import datetime
 
-slots = [()]
 # Create your views here.
 
 def home_view(request):
@@ -129,6 +128,22 @@ def logout_dataentry(request):
     logout(request)
     messages.success(request, 'You have been logged out')
     return redirect('')
+def add_patient(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        mobile = request.POST.get('mobile')
+
+        patient = models.Patient.objects.create(
+            name=name,
+            address=address,
+            mobile=mobile,
+        )        
+        patient.save()
+        messages.success(request, 'Patient added successfully')
+        return redirect('frontdesk_dashboard/addpatient')
+    return render(request, 'hospital/frontdesk_dashboard/addpatient.html')
+
 def schedule_appointment(request):
     # In context also add slot availability for each doctor by calling a function
     doctors = models.DB_User.objects.filter(type='Doctor')
@@ -194,7 +209,75 @@ def available_slots(doctor):
         return available_slots[:5]
     
     return available_slots
+def admit_patient(request):
+    patient = []
+    PATIENTS = models.Patient.objects.all()
+    # Check if patient is already admitted or discharged
+    for i in PATIENTS:
+        if i.status == 'Admitted' or i.status == 'Discharged':
+            continue
+        else:
+            patient.append(
 
+                {
+                    'id': i.id,
+                    'name': i.name
+                }
+            )
+    context = {
+        'patients': patient,
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        # Now we look for a empty room
+        room = models.Room.objects.filter(room_status='Available').first()
+        # If no room is available then we return an error
+        if room is None:
+            messages.error(request, 'No room available')
+            return redirect('frontdesk_dashboard/admit_patient')
+        # Now we update the room status to occupied
+        room.room_status = 'Occupied'
+        room.save()
+
+        # Now we update the patient status to admitted
+        patient = models.Patient.objects.get(id=patientId)
+        patient.status = 'Admitted'
+        patient.roomNumber = room
+
+        messages.success(request, 'Patient admitted successfully in room number '+str(room.room_number))
+        return redirect('frontdesk_dashboard/admit_patient')
+    return render(request, 'hospital/frontdesk_dashboard/admit_patient.html', context)
+
+def discharge_patient(request):
+    patient = []
+    PATIENTS = models.Patient.objects.all()
+    # Check if patient is already admitted or discharged
+    for i in PATIENTS:
+        if i.status == 'Admitted':
+            patient.append(
+                {
+                    'id': i.id,
+                    'name': i.name
+                }
+            )
+    context = {
+        'patients': patient,
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        # Now we update the room status to occupied
+        room = models.Room.objects.get(room_number=models.Patient.objects.get(id=patientId).roomNumber)
+        room.room_status = 'Available'
+        room.save()
+
+        # Now we update the patient status to admitted
+        patient = models.Patient.objects.get(id=patientId)
+        patient.status = 'Discharged'
+        patient.roomNumber = None
+        patient.save()
+        messages.success(request, 'Patient discharged successfully')
+        return redirect('frontdesk_dashboard/discharge_patient')
+    return render(request, 'hospital/frontdesk_dashboard/discharge_patient.html', context)
 
 
 #for showing signup/login button for admin(by sumit)
