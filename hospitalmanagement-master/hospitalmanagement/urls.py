@@ -10,18 +10,17 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home_view,name=''),
 
-
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
 
-
-    path('adminclick', views.adminclick_view),
     path('doctorclick', views.doctorclick_view),
-    path('patientclick', views.patientclick_view),
+    path('frontdeskclick', views.frontdeskclick_view),
+    path('dataentryclick', views.dataentryclick_view),
 
-    path('adminsignup', views.admin_signup_view),
-    path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
-    path('patientsignup', views.patient_signup_view),
+    # path('adminsignup', views.admin_signup_view),
+    # path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
+    # path('patientsignup', views.patient_signup_view),
+    
     
     path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
     path('doctorlogin', LoginView.as_view(template_name='hospital/doctorlogin.html')),

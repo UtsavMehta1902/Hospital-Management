@@ -15,6 +15,11 @@ import datetime
 slots = [()]
 # Create your views here.
 
+def home_view(request):
+    # if request.user.is_authenticated:
+    #     return HttpResponseRedirect('afterlogin')
+    return render(request,'hospital/index.html')
+
 def login_doctor(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -34,8 +39,8 @@ def login_doctor(request):
 @login_required(login_url='doctorlogin')
 def doctor_dashboard(request):
     context = {
-        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-        'patients': models.Patient.objects.filter(assignedDoctorId=request.user.id),
+        'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
+        'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
     }
     return render(request, 'hospital/doctor_dashboard.html', context)
 
@@ -58,22 +63,18 @@ def login_frontdesk(request):
 @login_required(login_url='frontdesklogin')
 def frontdesk_dashboard(request):
     context = {
-        'frontdesk': models.DB_User.objects.get(user=request.user, type='FrontDesk'),
-        'patients': models.Patient.objects.all(),
+        'frontdesk.user.id' : models.DB_User.objects.get(user=request.user, type='FrontDesk').get_id,
+        'frontdesk.name': models.DB_User.objects.get(user=request.user, type='FrontDesk').get_name,
     }
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        name = request.POST.get('name')
         address = request.POST.get('address')
         mobile = request.POST.get('mobile')
-        assignedDoctor = request.POST.get('assignedDoctor')
 
         patient = models.Patient.objects.create(
-            first_name=first_name,
-            last_name=last_name,
+            name=name,
             address=address,
             mobile=mobile,
-            assignedDoctorId=assignedDoctor
         )        
         patient.save()
         messages.success(request, 'Patient added successfully')
@@ -114,24 +115,20 @@ def dataentry_dashboard(request):
         return redirect('dataentry_dashboard')
     return render(request, 'hospital/dataentry_dashboard.html', context)
 
+def logout_doctor(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('')
 
-#---------Front Desk Operator Views----------#
-# Schedule appoinment for a patient by front desk operator among available doctors
-# def schedule_appointment(request):
-#     if request.method == 'POST':
-#         patientId = request.POST.get('patientId')
-#         assignedDoctor = request.POST.get('assignedDoctor')
-#         appointment_date = request.POST.get('appointment_date')
-#         appointment_time = request.POST.get('appointment_time')
-#         patient = models.Patient.objects.get(id=patientId)
-#         patient.assignedDoctorId = assignedDoctor
-#         patient.appointment_date = appointment_date
-#         patient.appointment_time = appointment_time
-#         patient.save()
-#         messages.success(request, 'Appointment scheduled successfully')
-#         return redirect('frontdesk_dashboard')
-#     return render(request, 'hospital/frontdesk_dashboard.html')
+def logout_frontdesk(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('')
 
+def logout_dataentry(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('')
 def schedule_appointment(request):
     # In context also add slot availability for each doctor by calling a function
     doctors = models.DB_User.objects.filter(type='Doctor')
@@ -199,31 +196,34 @@ def available_slots(doctor):
     return available_slots
 
 
-def home_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/index.html')
-
 
 #for showing signup/login button for admin(by sumit)
-def adminclick_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/adminclick.html')
+# def adminclick_view(request):
+#     if request.user.is_authenticated:
+#         return HttpResponseRedirect('afterlogin')
+#     return render(request,'hospital/adminclick.html')
 
 
 #for showing signup/login button for doctor(by sumit)
 def doctorclick_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/doctorclick.html')
+        if models.DB_User.objects.get(user=request.user, type='Doctor'):
+            return HttpResponseRedirect('doctor_dashboard')
+    return redirect('doctorlogin')
 
 
 #for showing signup/login button for patient(by sumit)
-def patientclick_view(request):
+def frontdeskclick_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/patientclick.html')
+        if models.DB_User.objects.get(user=request.user, type='FrontDesk'):
+            return HttpResponseRedirect('frontdesk_dashboard')
+    return redirect('frontdesklogin')
+
+def dataentryclick_view(request):
+    if request.user.is_authenticated:
+        if models.DB_User.objects.get(user=request.user, type='DataEntry'):
+            return HttpResponseRedirect('dataentry_dashboard')
+    return redirect('dataentrylogin')
 
 
 
