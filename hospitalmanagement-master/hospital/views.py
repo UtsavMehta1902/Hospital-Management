@@ -129,6 +129,7 @@ def logout_dataentry(request):
     logout(request)
     messages.success(request, 'You have been logged out')
     return redirect('')
+
 def schedule_appointment(request):
     # In context also add slot availability for each doctor by calling a function
     doctors = models.DB_User.objects.filter(type='Doctor')
@@ -196,6 +197,65 @@ def available_slots(doctor):
     return available_slots
 
 
+# doctor dashboard functionality to view all patients treated by him
+def doctor_dashboard(request):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': models.Patient.objects.get(doctor=request.user),
+    }
+    return render(request, 'hospital/doctor_dashboard.html', context)
+
+# doctor dashboard functionality to prescribe medicine and add it to model Prescription 
+def doctor_prescribe_medicine(request):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': models.Patient.objects.all(),
+    }
+    if request.method == 'POST':
+        patient = request.POST.get('patient')
+        doctor = request.POST.get('doctor')
+        medicine_name = request.POST.get('medicine_name')
+        medicine_description = request.POST.get('medicine_description')
+        medicine = models.Prescription.objects.create(
+            patient=patient,
+            doctor=doctor,
+            medicine_name=medicine_name,
+            medicine_description=medicine_description
+        )
+        medicine.save()
+        messages.success(request, 'Patient medicine added successfully')
+        return redirect('doctor_dashboard')
+    return render(request, 'hospital/doctor_dashboard/prescribe_medicine.html', context)
+
+# doctor dashboard functionality to prescribe test and add it to model Test_Results
+def doctor_prescribe_test(request):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': models.Patient.objects.all(),
+    }
+    if request.method == 'POST':
+        patient = request.POST.get('patient')
+        doctor = request.POST.get('doctor')
+        test_name = request.POST.get('test_name')
+        test = models.Test_Results.objects.create(
+            patient=patient,
+            doctor=doctor,
+            test_name=test_name,
+        )
+        test.save()
+        messages.success(request, 'Patient test added successfully')
+        return redirect('doctor_dashboard')
+    return render(request, 'hospital/doctor_dashboard/prescribe_test.html', context)
+
+# doctor dashboard functionality to view all information of a patient
+def doctor_view_patient(request, patient_id):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patient': models.Patient.objects.get(id=patient_id),
+        'prescriptions': models.Prescription.objects.filter(patient=patient_id),
+        'test_results': models.Test_Results.objects.filter(patient=patient_id),
+    }
+    return render(request, 'hospital/doctor_dashboard/view_patient.html', context)
 
 #for showing signup/login button for admin(by sumit)
 # def adminclick_view(request):

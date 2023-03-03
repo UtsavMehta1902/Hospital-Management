@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 class DB_User(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, choices=[('Doctor', 'Doctor'), ('FrontDesk', 'FrontDesk'), ('DataEntry', 'DataEntry')])
-    address = models.CharField(max_length=40)
+    address = models.CharField(max_length=100)
     mobile = models.CharField(max_length=20)
 
     @property
