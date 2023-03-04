@@ -32,6 +32,7 @@ urlpatterns = [
 
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
+    path('patient/<int:patient_id>', views.doctor_view_patient,name='patient'),
 
     path('admin-doctor', views.admin_doctor_view,name='admin-doctor'),
     path('admin-view-doctor', views.admin_view_doctor_view,name='admin-view-doctor'),
@@ -42,7 +43,6 @@ urlpatterns = [
     path('approve-doctor/<int:pk>', views.approve_doctor_view,name='approve-doctor'),
     path('reject-doctor/<int:pk>', views.reject_doctor_view,name='reject-doctor'),
     path('admin-view-doctor-specialisation',views.admin_view_doctor_specialisation_view,name='admin-view-doctor-specialisation'),
-
 
     path('admin-patient', views.admin_patient_view,name='admin-patient'),
     path('admin-view-patient', views.admin_view_patient_view,name='admin-view-patient'),
@@ -68,13 +68,13 @@ urlpatterns = [
 
 #---------FOR DOCTOR RELATED URLS-------------------------------------
 urlpatterns +=[
-    path('doctor-dashboard', views.doctor_dashboard_view,name='doctor-dashboard'),
+    path('doctor-dashboard', views.doctor_dashboard,name='doctor-dashboard'),
     path('search', views.search_view,name='search'),
 
     path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
     path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
     path('doctor-view-discharge-patient',views.doctor_view_discharge_patient_view,name='doctor-view-discharge-patient'),
-
+    path('doctor-prescribe-meds/<int:patient_id>', views.doctor_prescribe_medicine,name='doctor-prescribe-meds'),
     path('doctor-appointment', views.doctor_appointment_view,name='doctor-appointment'),
     path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
     path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
