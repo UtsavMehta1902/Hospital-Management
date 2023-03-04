@@ -72,22 +72,6 @@ class Appointment(models.Model):
     appointmentDateSlot = models.DateTimeField(null=True, default=None)
     description = models.TextField(max_length=500, blank=True, default='')
 
-
-# class PatientDischargeDetails(models.Model):
-#     patientId = models.ForeignKey('Patient', on_delete=models.SET_NULL)
-#     patientName = models.CharField(max_length=40)
-#     assignedDoctorName = models.CharField(max_length=40)
-#     address = models.CharField(max_length=40)
-#     mobile = models.CharField(max_length=20, null=True)
-#     symptoms = models.CharField(max_length=100, null=True)
-
-#     roomCharge = models.PositiveIntegerField(null=False)
-#     medicineCost = models.PositiveIntegerField(null=False)
-#     doctorFee = models.PositiveIntegerField(null=False)
-#     OtherCharge = models.PositiveIntegerField(null=False)
-#     total = models.PositiveIntegerField(null=False)
-
-
 class Prescription(models.Model):
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
     doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL, null=True)

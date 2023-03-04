@@ -318,43 +318,47 @@ def frontdesk_add_patient(request):
 @login_required(login_url='/frontdesklogin')
 @user_passes_test(is_frontdesk, login_url='/frontdesklogin')
 def frontdesk_schedule_appointment(request):
-    # In context also add slot availability for each doctor by calling a function
-    # Now add the new_doc to context
-    patient = models.DB_User.objects.all()
-    # Remove those patient which are admitted or discharged from the list
+    patient = models.Patient.objects.all()
     new_patient = []
     for p in patient:
-        if p.status == 'Admitted' or p.status == 'Discharged':
+        if p.status == 'Admitted':
             continue
         else:
+            if p.status == 'Discharged':
+                p.status = 'Registered'
+                p.save()
             new_patient.append(p)
     
+    doctors = models.DB_User.objects.filter(type='Doctor')
     context = {
-        'doctors': models.DB_User.objects.filter(type='Doctor'),
+        'frontdesk': models.DB_User.objects.get(id=3), # after login workds replace frontuser12 with request.user
+        'doctors': doctors,
         'patients': new_patient,
     }
+
     if request.method == 'POST':
-        patientId = request.POST.get('patientId')
-        assignedDoctor = request.POST.get('assignedDoctor') #DoctorID
-        # appointment_date_slot = request.POST.get('appointmentDateSlot')
-        appointment_date_slot = frontdesk_available_slots(assignedDoctor)
+        patientId = request.POST.get('patient')
+        patient = models.Patient.objects.get(patientId=patientId)
+        assignedDoctor = request.POST.get('doctor') 
+        doctor = doctors[int(assignedDoctor)-1]
+        appointment_date_slot = frontdesk_available_slots(doctor)
+        print(appointment_date_slot)
         description = request.POST.get('description')
-        # Save the appointment in the database
         appointment = models.Appointment.objects.create(
-            patient=patientId,
-            doctor=assignedDoctor,
+            patient=patient,
+            doctor=doctor,
             appointmentDateSlot=appointment_date_slot,
             description=description
         )
         appointment.save()
 
         messages.success(request, 'Appointment scheduled successfully')
-        return redirect('frontdesk_dashboard/schedule_appointment')
-    return render(request, 'hospital/frontdesk_dashboard/schedule_appointment.html', context)
+        return redirect('/frontdesk-dashboard')
+    return render(request, 'hospital/frontdesk-schedule-appointment.html', context)
 
 def frontdesk_available_slots(doctor):
     # Get all appointments of the doctor
-    appointments = models.Appointment.objects.filter(assignedDoctorId=doctor)
+    appointments = models.Appointment.objects.filter(doctor=doctor)
     # Get today Date from system
     # today = datetime.datetime.today().replace(microsecond=0)
     today = datetime.datetime.now().replace(microsecond=0)
@@ -366,6 +370,7 @@ def frontdesk_available_slots(doctor):
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
             # Check if the slot is already booked
         if not appointments.filter(appointmentDateSlot=slot).exists():
+            print(slot)
             available_slots.append(slot)
     for i in range(8,18):
         # Create a datetime object for each slot
@@ -380,44 +385,28 @@ def frontdesk_available_slots(doctor):
 @user_passes_test(is_frontdesk, login_url='/frontdesklogin')
 def frontdesk_schedule_tests(request):
     P = models.Patient.objects.all()
-
-    patient = []
-    for i in P:
-        pending_test = frontdesk_pending_tests(i.id)
-        if len(pending_test) > 0:
-            for j in pending_test:
-                patient.append(
-                    {
-                        'id': i.id,
-                        'name': i.name,
-                        'test': j.test_name,
-                        'doctor_id' : j.doctor.id,
-                        'doctor_name' : j.doctor.name,
-                        # 'SLOT': frontdesk_availaible_test_slot(j.test_name)
-                    }
-                )
     context = {
-        'patients': patient,
+        'frontdesk': models.DB_User.objects.get(id=3), 
+        'patients': P,
     }
     if request.method == 'POST':
-        patientId = request.POST.get('patientId')
-        doctorId = request.POST.get('doctorId')
+        patientId = request.POST.get('patient')
+        patient = models.Patient.objects.get(patientId=patientId)
         test_name = request.POST.get('test_name')
-        test_slot = frontdesk_available_slots(test_name)
-        test = models.Test.objects.create(
-            patient=patientId,
-            doctor=doctorId,
+        test_slot = frontdesk_available_test_slot(test_name)
+        test = models.Test_Results.objects.create(
+            patient=patient,
             test_name=test_name,
             test_slot=test_slot,
         )
         test.save()
         messages.success(request, 'Test scheduled successfully')
-        return redirect('frontdesk_dashboard/schedule_test')
+        return redirect('/frontdesk-dashboard')
 
-    return render(request, 'hospital/frontdesk_dashboard/schedule_test.html', context)
+    return render(request, 'hospital/frontdesk-schedule-test.html', context)
 
-def frontdesk_availaible_test_slot(test_name):
-    tests = models.Test.objects.filter(test_name=test_name)
+def frontdesk_available_test_slot(test_name):
+    tests = models.Test_Results.objects.filter(test_name=test_name)
     # Get today Date from system
     today = datetime.datetime.now().replace(microsecond=0)
     next_day = datetime.datetime.today().replace(
@@ -439,12 +428,14 @@ def frontdesk_availaible_test_slot(test_name):
             available_slots.append(slot)
 
     return available_slots[0]
+
 def frontdesk_pending_tests(id):
-    tests = models.Test.objects.filter(patient=id)
+
+    tests = models.Test_Results.objects.filter(patient=id)
     # Now among these tests remove those which are already done
     pending_tests = []
     for i in tests:
-        if i.test_result is None:
+        if i.test_results is None:
             pending_tests.append(i)
 
     return pending_tests
