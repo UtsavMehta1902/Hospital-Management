@@ -1,8 +1,8 @@
-{% extends 'hospital/dashboard-doctor-base.html' %} {% load static %}
+{% extends 'hospital/frontdesk-dashboard-base.html' %} {% load static %}
 
-{% block doctor-name %}
-{{doctor.user.first_name}} {{doctor.user.last_name}}
-{% endblock doctor-name %}
+{% block frontdesk-name %}
+{{frontdesk.user.first_name}} {{frontdesk.user.last_name}}
+{% endblock frontdesk-name %}
 
 {% block content %} 
 <style>
@@ -175,8 +175,8 @@
       <tr>
         <th><h1>Sr.No</h1></th>
         <th><h1>Name</h1></th>
-        <th><h1>View Details</h1></th>
-        <th><h1>Prescribe</h1></th>
+        <th><h1>Admit</h1></th>
+        <th><h1>Discharge</h1></th>
       </tr>
     </thead>
     <tbody>
@@ -186,21 +186,16 @@
         <td>{{patient.name}}</td>
         <td>
           <a
-            href="/patient/{{patient.patientId}}"
+            href="/frontdesk-admit-patient/{{patient.patientId}}"
             class="btn"
             >Details&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
         </td>
         <td>
           <a
-            href="/doctor-prescribe-meds/{{patient.patientId}}"
+            href="/frontdesk-discharge-patient/{{patient.patientId}}"
             class="btn btn2"
             >Medicines&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
-          > /
-          <a
-            href="/doctor-prescribe-tests/{{patient.patientId}}"
-            class="btn btn3"
-            >Tests&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
         </td>
       </tr>
