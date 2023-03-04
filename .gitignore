@@ -2,4 +2,6 @@ env
 **/__pycache__/
 /**/__pycache__/
 hospitalmanagement-master/hospital/migrations
-db.sqlite3
+hospitalmanagement-master/hospital/__pycache__
+hospitalmanagement-master/hospitalmanagement/__pycache__
+hospitalmanagement-master/db.sqlite3

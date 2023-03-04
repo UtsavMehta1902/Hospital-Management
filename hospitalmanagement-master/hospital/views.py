@@ -449,16 +449,13 @@ def doctor_prescribe_test(request, patient_id):
         'patient': models.Patient.objects.get(patientId=patient_id),
     }
     if request.method == 'POST':
-        patient = request.POST.get('patient')
-        doctor = request.POST.get('doctor')
         test_name = request.POST.get('test_name')
-        # test = models.Test_Results.objects.create(
-        #     patient=patient,
-        #     doctor=doctor,
-        #     test_name=test_name,
-        # )
-        # test.save()
-        print(doctor, patient, test_name)
+        test = models.Test_Results.objects.create(
+            patient=models.Patient.objects.get(patientId=patient_id),
+            doctor=doctor12,
+            test_name=test_name,
+        )
+        test.save()
         messages.success(request, 'Patient test added successfully')
         return redirect('doctor-dashboard')
     return render(request, 'hospital/doctor-prescribe-test.html', context)
