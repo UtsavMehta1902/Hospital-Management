@@ -62,12 +62,12 @@ def login_frontdesk(request):
             db_user = models.DB_User.objects.get(user=user, type='FrontDesk')
             if db_user is not None:
                 login(request, user)
-                return redirect('frontdesk_dashboard')
+                return redirect('/frontdesk_dashboard')
             else:
                 messages.error(request, 'You are not a frontdesk operator')
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'hospital/frontdesk_login.html')
+    return render(request, 'hospital/doctor-login.html')
 
 @login_required(login_url='frontdesklogin')
 def frontdesk_dashboard(request):
@@ -103,12 +103,12 @@ def login_dataentry(request):
             db_user = models.DB_User.objects.get(user=user, type='DataEntry')
             if db_user is not None:
                 login(request, user)
-                return redirect('dataentry_dashboard')
+                return redirect('/dataentry-dashboard')
             else:
                 messages.error(request, 'You are not a data entry operator')
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'hospital/dataentry_login.html')
+    return render(request, 'hospital/doctor-login.html')
 
 @login_required(login_url='dataentrylogin')
 def dataentry_dashboard(request):
@@ -119,7 +119,7 @@ def dataentry_dashboard(request):
     for test in models.Test_Results.objects.all():
         if test.test_results == None:
             context['tests'].append(test)
-    return render(request, 'hospital/dataentry_dashboard.html', context)
+    return render(request, 'hospital/dataentry-dashboard.html', context)
 
 @login_required(login_url='dataentrylogin')
 def add_test_results(request):
@@ -299,16 +299,13 @@ def frontdeskclick_view(request):
     if request.user.is_authenticated:
         if models.DB_User.objects.get(user=request.user, type='FrontDesk'):
             return HttpResponseRedirect('frontdesk_dashboard')
-    return redirect('frontdesklogin')
+    return redirect('/frontdesklogin')
 
 def dataentryclick_view(request):
     if request.user.is_authenticated:
         if models.DB_User.objects.get(user=request.user, type='DataEntry'):
             return HttpResponseRedirect('dataentry_dashboard')
-    return redirect('dataentrylogin')
-
-
-
+    return redirect('/dataentrylogin')
 
 def admin_signup_view(request):
     form = forms.AdminSigupForm()

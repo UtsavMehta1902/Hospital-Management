@@ -8,7 +8,6 @@
 
   <style type="text/css">
     .all {
-        background-color: #b9fbbe !important;
         margin: 2rem 0;
         border-radius: 1rem;
         display: flex;
@@ -42,13 +41,18 @@
     padding: 0.5rem;
     margin: 2rem 33%;
     width: 10rem;
+    border-color: #fc7300;
+    font-weight: bolder;
+    font-size: 1.2rem;
     }
   </style>
 </head>
 
 <body>
   {% include "hospital/navbar.html" %}
+  <div class="all">
   <div class="container">
+    
     <div class="form-prescribe">
         <form method="POST"> {% csrf_token %}
     
@@ -65,8 +69,9 @@
                 <input type="password" class="form-control mt-2" name="password" placeholder="password" required>
             </div>
         </div>
-        <button type="submit" class="btn btn-outline-primary mt-4 btn-register">Login</button>
+        <button type="submit" class="btn-register">Login</button>
     </div>
+</div>
 </div>
   {% include "hospital/footer.html" %}
 </body>

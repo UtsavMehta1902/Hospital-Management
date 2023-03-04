@@ -17,9 +17,9 @@ urlpatterns = [
     path('frontdeskclick', views.frontdeskclick_view),
     path('dataentryclick', views.dataentryclick_view),
     
-    path('frontdesklogin', LoginView.as_view(template_name='hospital/frontdesklogin.html')),
+    path('frontdesklogin', views.login_frontdesk, name='login_frontdesk'),
     path('doctorlogin', views.login_doctor, name='login_doctor'),
-    path('dataentrylogin', LoginView.as_view(template_name='hospital/dataentrylogin.html')),
+    path('dataentrylogin', views.login_dataentry, name='login_dataentry'),
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     path('logout', LogoutView.as_view(template_name='hospital/index.html'),name='logout'),
@@ -57,6 +57,9 @@ urlpatterns = [
     path('admin-approve-appointment', views.admin_approve_appointment_view,name='admin-approve-appointment'),
     path('approve-appointment/<int:pk>', views.approve_appointment_view,name='approve-appointment'),
     path('reject-appointment/<int:pk>', views.reject_appointment_view,name='reject-appointment'),
+
+
+    path('dataentry-dashboard', views.dataentry_dashboard,name='dataentry-dashboard'),
 ]
 
 
