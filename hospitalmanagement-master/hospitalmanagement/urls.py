@@ -16,16 +16,10 @@ urlpatterns = [
     path('doctorclick', views.doctorclick_view),
     path('frontdeskclick', views.frontdeskclick_view),
     path('dataentryclick', views.dataentryclick_view),
-
-    # path('adminsignup', views.admin_signup_view),
-    # path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
-    # path('patientsignup', views.patient_signup_view),
     
-    
-    path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
-    path('doctorlogin', LoginView.as_view(template_name='hospital/doctorlogin.html')),
-    path('patientlogin', LoginView.as_view(template_name='hospital/patientlogin.html')),
-
+    path('frontdesklogin', LoginView.as_view(template_name='hospital/frontdesklogin.html')),
+    path('doctorlogin', views.login_doctor, name='login_doctor'),
+    path('dataentrylogin', LoginView.as_view(template_name='hospital/dataentrylogin.html')),
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     path('logout', LogoutView.as_view(template_name='hospital/index.html'),name='logout'),

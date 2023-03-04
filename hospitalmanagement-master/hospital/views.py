@@ -36,12 +36,12 @@ def login_doctor(request):
             db_user = models.DB_User.objects.get(user=user, type='Doctor')
             if db_user is not None:
                 login(request, user)
-                return redirect('doctor_dashboard')
+                return redirect('/doctor-dashboard')
             else:
                 messages.error(request, 'You are not a doctor')
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'hospital/doctor_login.html')
+    return render(request, 'hospital/doctor-login.html')
 
 # @login_required(login_url='doctorlogin')
 # def doctor_dashboard(request):
@@ -277,7 +277,7 @@ def doctorclick_view(request):
     if request.user.is_authenticated:
         if models.DB_User.objects.get(user=request.user, type='Doctor'):
             return HttpResponseRedirect('doctor_dashboard')
-    return redirect('doctorlogin')
+    return redirect('/doctorlogin')
 
 
 #for showing signup/login button for patient(by sumit)
