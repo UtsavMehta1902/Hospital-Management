@@ -153,6 +153,22 @@ def add_patient(request):
         return redirect('frontdesk_dashboard/addpatient')
     return render(request, 'hospital/frontdesk_dashboard/addpatient.html')
 
+def add_patient(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        mobile = request.POST.get('mobile')
+
+        patient = models.Patient.objects.create(
+            name=name,
+            address=address,
+            mobile=mobile,
+        )
+        patient.save()
+        messages.success(request, 'Patient added successfully')
+        return redirect('frontdesk_dashboard/addpatient')
+    return render(request, 'hospital/frontdesk_dashboard/addpatient.html')
+
 def schedule_appointment(request):
     # In context also add slot availability for each doctor by calling a function
     doctors = models.DB_User.objects.filter(type='Doctor')
@@ -217,6 +233,189 @@ def available_slots(doctor):
         return available_slots[:5]
     
     return available_slots
+
+def admit_patient(request):
+    patient = []
+    PATIENTS = models.Patient.objects.all()
+    # Check if patient is already admitted or discharged
+    for i in PATIENTS:
+        if i.status == 'Admitted' or i.status == 'Discharged':
+            continue
+        else:
+            patient.append(
+
+                {
+                    'id': i.id,
+                    'name': i.name
+                }
+            )
+    context = {
+        'patients': patient,
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        # Now we look for a empty room
+        room = models.Room.objects.filter(room_status='Available').first()
+        # If no room is available then we return an error
+        if room is None:
+            messages.error(request, 'No room available')
+            return redirect('frontdesk_dashboard/admit_patient')
+        # Now we update the room status to occupied
+        room.room_status = 'Occupied'
+        room.save()
+
+        # Now we update the patient status to admitted
+        patient = models.Patient.objects.get(id=patientId)
+        patient.status = 'Admitted'
+        patient.roomNumber = room
+
+        messages.success(
+            request, 'Patient admitted successfully in room number '+str(room.room_number))
+        return redirect('frontdesk_dashboard/admit_patient')
+    return render(request, 'hospital/frontdesk_dashboard/admit_patient.html', context)
+
+def discharge_patient(request):
+    patient = []
+    PATIENTS = models.Patient.objects.all()
+    # Check if patient is already admitted or discharged
+    for i in PATIENTS:
+        if i.status == 'Admitted':
+            patient.append(
+                {
+                    'id': i.id,
+                    'name': i.name
+                }
+            )
+    context = {
+        'patients': patient,
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        # Now we update the room status to occupied
+        room = models.Room.objects.get(
+            room_number=models.Patient.objects.get(id=patientId).roomNumber)
+        room.room_status = 'Available'
+        room.save()
+
+        # Now we update the patient status to admitted
+        patient = models.Patient.objects.get(id=patientId)
+        patient.status = 'Discharged'
+        patient.dischargeDate = datetime.datetime.today().replace(microsecond=0)
+        patient.roomNumber = None
+        patient.save()
+        messages.success(request, 'Patient discharged successfully')
+        return redirect('frontdesk_dashboard/discharge_patient')
+    return render(request, 'hospital/frontdesk_dashboard/discharge_patient.html', context)
+
+
+def schedule_tests(request):
+    P = models.Patient.objects.all()
+
+    patient = []
+    for i in P:
+        pending_test = pending_tests(i.id)
+        if len(pending_test) > 0:
+            for j in pending_test:
+                patient.append(
+                    {
+                        'id': i.id,
+                        'name': i.name,
+                        'test': j.test_name,
+                        'doctor_id' : j.doctor.id,
+                        'doctor_name' : j.doctor.name,
+                        'SLOT': availaible_test_slot(j.test_name)
+                    }
+                )
+    context = {
+        'patients': patient,
+    }
+    if request.method == 'POST':
+        patientId = request.POST.get('patientId')
+        doctorId = request.POST.get('doctorId')
+        test_name = request.POST.get('test_name')
+        test_slot = request.POST.get('test_slot')
+        test = models.Test.objects.create(
+            patient=patientId,
+            doctor=doctorId,
+            test_name=test_name,
+            test_slot=test_slot,
+        )
+        test.save()
+        messages.success(request, 'Test scheduled successfully')
+        return redirect('frontdesk_dashboard/schedule_tests')
+
+    return render(request, 'hospital/frontdesk_dashboard/schedule_test.html', context)
+
+def availaible_test_slot(test_name):
+    tests = models.Test.objects.filter(test_name=test_name)
+    # Get today Date from system
+    today = datetime.datetime.today().replace(microsecond=0)
+    next_day = datetime.datetime.today().replace(
+        microsecond=0) + datetime.timedelta(days=1)
+    available_slots = []
+
+    for i in range(8, 18):
+        # Create a datetime object for each slot
+        slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
+        # Check if the slot is in the future
+        if slot > today:
+            # Check if the slot is already booked
+            if not tests.filter(test_slot=slot).exists():
+                available_slots.append(slot)
+    for i in range(8, 18):
+        # Create a datetime object for each slot
+        slot = datetime.datetime(
+            next_day.year, next_day.month, next_day.day, i, 0, 0)
+        # Check if the slot is in the future
+        if slot > today:
+            # Check if the slot is already booked
+            if not tests.filter(test_slot=slot).exists():
+                available_slots.append(slot)
+
+    # If size of available slots greater than 5 then return only 5 slots
+    if len(available_slots) > 5:
+        return available_slots[:5]
+
+    return available_slots
+
+def pending_tests(id):
+    tests = models.Test.objects.filter(patient=id)
+    # Now among these tests remove those which are already done
+    pending_tests = []
+    for i in tests:
+        if i.test_result is None:
+            pending_tests.append(i)
+
+    return pending_tests
+
+
+def pending_test_results(request):
+    test = models.Test.objects.all()
+    tests = []
+    for i in test:
+        if i.test_result is None:
+            tests.append(
+                {
+                    'id': i.id,
+                    'patient_name': i.patient.name,
+                    'doctor_name': i.doctor.name,
+                    'test_name': i.test_name,
+                    'test_slot': i.test_slot,
+                }
+            )
+
+    context = {
+        'tests': tests,
+    }
+    if request.method == 'POST':
+        testId = request.POST.get('testId')
+        test_result = request.POST.get('test_result')
+        test = models.Test.objects.get(id=testId)
+        test.test_result = test_result
+        test.save()
+        messages.success(request, 'Test result added successfully')
+        return redirect('dataentry_dashboard/pending_test_results')
+    return render(request, 'hospital/dataentry_dashboard/pending_test_results.html', context)
 
 def admit_patient(request):
     patient = []
