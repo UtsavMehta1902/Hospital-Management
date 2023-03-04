@@ -4,7 +4,7 @@ from django.urls import path
 from hospital import views
 from django.contrib.auth.views import LoginView,LogoutView
 
-
+'''
 #-------------FOR ADMIN RELATED URLS
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,8 +22,7 @@ urlpatterns = [
     path('dataentrylogin', views.login_dataentry, name='login_dataentry'),
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
-    path('logout', LogoutView.as_view(template_name='hospital/index.html'),name='logout'),
-
+    
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('patient/<int:patient_id>', views.doctor_view_patient,name='patient'),
@@ -58,8 +57,23 @@ urlpatterns = [
     path('reject-appointment/<int:pk>', views.reject_appointment_view,name='reject-appointment'),
 
 
-    path('dataentry-dashboard', views.dataentry_dashboard,name='dataentry-dashboard'),
-    path('dataentry/<int:id>/<str:name>', views.add_test_results, name='add_test_results')
+    
+]
+'''
+
+# --- For intial URLs (by Pranav) ---
+urlpatterns = [
+    path('',views.home_view,name=''),
+    path('admin/', admin.site.urls),
+    path('frontdesklogin', views.login_frontdesk, name='login_frontdesk'),
+    path('doctorlogin', views.login_doctor, name='login_doctor'),
+    path('dataentrylogin', views.login_dataentry, name='login_dataentry'),
+    path('logout', views.logout_view,name='logout'),
+    path('doctorclick', views.doctorclick_view),
+    path('frontdeskclick', views.frontdeskclick_view),
+    path('dataentryclick', views.dataentryclick_view),
+    path('aboutus', views.aboutus_view),
+    path('contactus', views.contactus_view),
 ]
 
 # --- FOR FrontDesk Related URLs (by Pranav) ---
@@ -72,35 +86,49 @@ urlpatterns += [
     path('frontdesk-discharge-patient/<int:patient_id>', views.frontdesk_discharge_patient, name='frontdesk-discharge-patient'),
 ]
 
-
-#---------FOR DOCTOR RELATED URLS-------------------------------------
-urlpatterns +=[
-    path('doctor-dashboard', views.doctor_dashboard,name='doctor-dashboard'),
-    path('search', views.search_view,name='search'),
-
-    path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
-    path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
-    path('doctor-view-discharge-patient',views.doctor_view_discharge_patient_view,name='doctor-view-discharge-patient'),
+# --- FOR Doctor Related URLs (by Pranav) ---
+urlpatterns += [
+    path('doctor-dashboard', views.doctor_dashboard, name='doctor-dashboard'),
+    path('doctor-view-patient/<int:patient_id>', views.doctor_view_patient, name='doctor-view-patient'),
     path('doctor-prescribe-meds/<int:patient_id>', views.doctor_prescribe_medicine,name='doctor-prescribe-meds'),
     path('doctor-prescribe-tests/<int:patient_id>', views.doctor_prescribe_test,name='doctor-prescribe-test'),
-    path('doctor-appointment', views.doctor_appointment_view,name='doctor-appointment'),
-    path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
-    path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
-    path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
+]
+
+# --- FOR DataEntry Related URLs (by Pranav) ---
+urlpatterns += [
+    path('dataentry-dashboard', views.dataentry_dashboard,name='dataentry-dashboard'),
+    path('dataentry/<int:id>/<str:name>', views.add_test_results, name='add_test_results')
 ]
 
 
+# #---------FOR DOCTOR RELATED URLS-------------------------------------
+# urlpatterns +=[
+#     path('doctor-dashboard', views.doctor_dashboard,name='doctor-dashboard'),
+#     path('search', views.search_view,name='search'),
+
+#     path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
+#     path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
+#     path('doctor-view-discharge-patient',views.doctor_view_discharge_patient_view,name='doctor-view-discharge-patient'),
+#     path('doctor-prescribe-meds/<int:patient_id>', views.doctor_prescribe_medicine,name='doctor-prescribe-meds'),
+#     path('doctor-prescribe-tests/<int:patient_id>', views.doctor_prescribe_test,name='doctor-prescribe-test'),
+#     path('doctor-appointment', views.doctor_appointment_view,name='doctor-appointment'),
+#     path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
+#     path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
+#     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
+# ]
 
 
-#---------FOR PATIENT RELATED URLS-------------------------------------
-urlpatterns +=[
 
-    path('patient-dashboard', views.patient_dashboard_view,name='patient-dashboard'),
-    path('patient-appointment', views.patient_appointment_view,name='patient-appointment'),
-    path('patient-book-appointment', views.patient_book_appointment_view,name='patient-book-appointment'),
-    path('patient-view-appointment', views.patient_view_appointment_view,name='patient-view-appointment'),
-    path('patient-view-doctor', views.patient_view_doctor_view,name='patient-view-doctor'),
-    path('searchdoctor', views.search_doctor_view,name='searchdoctor'),
-    path('patient-discharge', views.patient_discharge_view,name='patient-discharge'),
 
-]
+# #---------FOR PATIENT RELATED URLS-------------------------------------
+# urlpatterns +=[
+
+#     path('patient-dashboard', views.patient_dashboard_view,name='patient-dashboard'),
+#     path('patient-appointment', views.patient_appointment_view,name='patient-appointment'),
+#     path('patient-book-appointment', views.patient_book_appointment_view,name='patient-book-appointment'),
+#     path('patient-view-appointment', views.patient_view_appointment_view,name='patient-view-appointment'),
+#     path('patient-view-doctor', views.patient_view_doctor_view,name='patient-view-doctor'),
+#     path('searchdoctor', views.search_doctor_view,name='searchdoctor'),
+#     path('patient-discharge', views.patient_discharge_view,name='patient-discharge'),
+
+# ]
