@@ -65,6 +65,20 @@ class PatientAppointmentForm(forms.ModelForm):
 
 #for contact us page
 class ContactusForm(forms.Form):
-    Name = forms.CharField(max_length=30)
-    Email = forms.EmailField()
-    Message = forms.CharField(max_length=500,widget=forms.Textarea(attrs={'rows': 3, 'cols': 30}))
+    Name = forms.CharField(max_length=30, widget=forms.Textarea(attrs={
+            'rows': 1,
+            'cols': 20,
+            'style': ' background-color: lightcyan; border: 3px solid #ddd inset; border-radius: 5px; padding: 10px;'
+        }))
+    Email = forms.EmailField( widget=forms.Textarea(attrs={
+            'rows': 1,
+            'cols': 20,
+            'style': ' background-color: lightcyan; border: 3px solid #ddd inset; border-radius: 5px; padding: 10px;'
+        }))
+    Message = forms.CharField(max_length=500,
+        widget=forms.Textarea(attrs={
+            'rows': 2,
+            'cols': 22,
+            'style': ' background-color: lightcyan; border: 3px solid #ddd inset; border-radius: 5px; padding: 10px;'
+        })
+    )
