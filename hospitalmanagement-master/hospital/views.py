@@ -29,7 +29,7 @@ def login_doctor(request):
             db_user = models.DB_User.objects.get(user=user, type='Doctor')
             if db_user is not None:
                 login(request, user)
-                return redirect('doctor_dashboard')
+                return redirect('doctor-dashboard')
             else:
                 messages.error(request, 'You are not a doctor')
         else:
@@ -55,7 +55,7 @@ def login_frontdesk(request):
             db_user = models.DB_User.objects.get(user=user, type='FrontDesk')
             if db_user is not None:
                 login(request, user)
-                return redirect('frontdesk_dashboard')
+                return redirect('frontdesk-dashboard')
             else:
                 messages.error(request, 'You are not a frontdesk operator')
         else:
@@ -90,10 +90,10 @@ def add_patient(request):
             name=name,
             address=address,
             mobile=mobile,
-        )        
+        )
         patient.save()
         messages.success(request, 'Patient added successfully')
-    return redirect('frontdesk_dashboard/add_patient')
+    return render(request, 'hospital/add_patient.html')
 
 def login_dataentry(request):
     if request.method == 'POST':
@@ -141,7 +141,7 @@ def add_test_results(request):
         test.save()
             
         messages.success(request, 'Patient test results added successfully')
-    return redirect('dataentry_dashboard/add_test_results')
+    return render(request, 'hospital/add_test_results.html')
 
 def logout_doctor(request):
     logout(request)
