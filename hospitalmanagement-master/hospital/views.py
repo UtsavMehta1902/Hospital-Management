@@ -222,18 +222,16 @@ def doctor_prescribe_medicine(request, patient_id):
         'patient': models.Patient.objects.get(patientId=patient_id),
     }
     if request.method == 'POST':
-        patient = request.POST.get('patient')
-        doctor = request.POST.get('doctor')
         medicine_name = request.POST.get('medicine_name')
         medicine_description = request.POST.get('medicine_description')
-        # medicine = models.Prescription.objects.create(
-        #     patient=patient,
-        #     doctor=doctor,
-        #     medicine_name=medicine_name,
-        #     medicine_description=medicine_description
-        # )
-        # medicine.save()
-        print(doctor, patient, medicine_name, medicine_description)
+        medicine = models.Prescription.objects.create(
+            patient=models.Patient.objects.get(patientId=patient_id),
+            doctor=doctor12,
+            medicine_name=medicine_name,
+            medicine_description=medicine_description
+        )
+        medicine.save()
+        print(doctor12, models.Patient.objects.get(patientId=patient_id), medicine_name, medicine_description)
         messages.success(request, 'Patient medicine added successfully')
         return redirect('doctor-dashboard')
     return render(request, 'hospital/doctor-prescribe-meds.html', context)
