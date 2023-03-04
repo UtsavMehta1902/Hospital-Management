@@ -48,9 +48,9 @@ def doctor_dashboard(request):
         'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
         'patients': []
     }
-    for Patient in models.Patient.objects.all():
-        if request.user in models.Appointment.objects.filter(patient=Patient).values_list('doctor', flat=True):
-            context['patients'].append(Patient)
+    Doctor = models.DB_User.objects.get(user=request.user, type='Doctor')
+    for appointment in models.Appointment.objects.filter(doctor=Doctor):
+        context['patients'].append(appointment.patient)
     return render(request, 'hospital/doctor_dashboard.html', context)
 
 def login_frontdesk(request):
