@@ -39,6 +39,40 @@
   #example2_next{
     color: #00425A !important;
   }
+
+  #example3_filter > label{
+    color: #00425A;
+    font-size: larger;
+  }
+
+  #example3_info{
+    color: #00425A;
+  }
+
+  #example3_previous{
+    color: #00425A !important;
+  }
+
+  #example3_next{
+    color: #00425A !important;
+  }
+
+  #example4_filter > label{
+    color: #00425A;
+    font-size: larger;
+  }
+
+  #example4_info{
+    color: #00425A;
+  }
+
+  #example4_previous{
+    color: #00425A !important;
+  }
+
+  #example4_next{
+    color: #00425A !important;
+  }
 </style>
 
 <style>
@@ -136,8 +170,9 @@
 
   .all {
     background-color: #b9fbbe !important;
-    margin-top: 2rem;
+    margin: 2rem 0;
     border-radius: 1rem;
+    padding-bottom: 2rem;
   }
 
   .btn {
@@ -175,7 +210,7 @@
       <tr>
         <th><h1>Sr.No</h1></th>
         <th><h1>Name</h1></th>
-        <th><h1>Admit</h1></th>
+        <th><h1>Room Number</h1></th>
         <th><h1>Discharge</h1></th>
       </tr>
     </thead>
@@ -185,19 +220,103 @@
         <td>{{patient.patientId}}.</td>
         <td>{{patient.name}}</td>
         <td>
+          {% if patient.status == 'Admitted' %}
+          {{patient.roomNumber.room_number}}
+          {% else %}
           <a
             href="/frontdesk-admit-patient/{{patient.patientId}}"
             class="btn"
-            >Details&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
-          >
+            >Admit&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
+          > 
+          {% endif %}
         </td>
         <td>
+          {% if patient.status == 'Admitted' %}
           <a
             href="/frontdesk-discharge-patient/{{patient.patientId}}"
             class="btn btn2"
-            >Medicines&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
+            >Discharge&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
+          {% else %}
+          -
+          {% endif %}
         </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<div class="container mt-4">
+  <h1 class="text-center page-title"><strong>Appointments</strong></h1>
+  <table class="table table-hover" id="example2">
+    <thead>
+      <tr>
+        <th><h1>Sr.No</h1></th>
+        <th><h1>Patient Name</h1></th>
+        <th><h1>Doctor Name</h1></th>
+        <th><h1>Time</h1></th>
+        <th><h1>Description</h1></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appointment in appointments %}
+      <tr>
+        <td>{{forloop.counter}}.</td>
+        <td>{{appointment.patient.name}}</td>
+        <td>{{appointment.doctor.user.first_name}} {{appointment.doctor.user.last_name}}</td>
+        <td>{{appointment.appointmentDateSlot}}</td>
+        <td>{{appointment.description}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="container mt-4">
+  <h1 class="text-center page-title"><strong>Tests</strong></h1>
+  <table class="table table-hover" id="example3">
+    <thead>
+      <tr>
+        <th><h1>Sr.No</h1></th>
+        <th><h1>Patient Name</h1></th>
+        <th><h1>Doctor Name</h1></th>
+        <th><h1>Time</h1></th>
+        <th><h1>Test Name</h1></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for test in tests %}
+      <tr>
+        <td>{{forloop.counter}}.</td>
+        <td>{{test.patient.name}}</td>
+        <td>{{test.doctor.user.first_name}} {{test.doctor.user.last_name}}</td>
+        <td>{{test.test_slot}}</td>
+        <td>{{test.test_name}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<div class="container mt-4">
+  <h1 class="text-center page-title"><strong>Rooms</strong></h1>
+  <table class="table table-hover" id="example4">
+    <thead>
+      <tr>
+        <th><h1>Sr.No</h1></th>
+        <th><h1>Room Number</h1></th>
+        <th><h1>Status</h1></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for room in rooms %}
+      <tr>
+        <td>{{forloop.counter}}.</td>
+        <td>{{room.room_number}}</td>
+        <td>{{room.room_status}}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -219,6 +338,20 @@
 
     $(document).ready(function () {
       $('#example2').DataTable({
+        dom: 'Bfrtip',
+        buttons: []
+      });
+    });
+
+    $(document).ready(function () {
+      $('#example3').DataTable({
+        dom: 'Bfrtip',
+        buttons: []
+      });
+    });
+
+    $(document).ready(function () {
+      $('#example4').DataTable({
         dom: 'Bfrtip',
         buttons: []
       });
