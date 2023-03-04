@@ -41,6 +41,8 @@ def doctor_dashboard(request):
     context = {
         'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
         'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
+        'doctor.address': models.DB_User.objects.get(user=request.user, type='Doctor').address,
+        'doctor.mobile': models.DB_User.objects.get(user=request.user, type='Doctor').mobile,
     }
     return render(request, 'hospital/doctor_dashboard.html', context)
 
@@ -65,6 +67,8 @@ def frontdesk_dashboard(request):
     context = {
         'frontdesk.user.id' : models.DB_User.objects.get(user=request.user, type='FrontDesk').get_id,
         'frontdesk.name': models.DB_User.objects.get(user=request.user, type='FrontDesk').get_name,
+        'frontdesk.address': models.DB_User.objects.get(user=request.user, type='FrontDesk').address,
+        'frontdesk.mobile': models.DB_User.objects.get(user=request.user, type='FrontDesk').mobile,
     }
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -101,7 +105,9 @@ def login_dataentry(request):
 def dataentry_dashboard(request):
     context = {
         'dataentry.user.id':models.DB_User.objects.get(user=request.user, type='DataEntry').get_id,
-        'dataentry.name':models.DB_User.objects.get(user=request.user, type='DataEntry').get_name, 
+        'dataentry.name':models.DB_User.objects.get(user=request.user, type='DataEntry').get_name,
+        'dataentry.address':models.DB_User.objects.get(user=request.user, type='DataEntry').address,
+        'dataentry.mobile':models.DB_User.objects.get(user=request.user, type='DataEntry').mobile,
         'patients': [],
     }
 
