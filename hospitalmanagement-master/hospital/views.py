@@ -431,13 +431,14 @@ def doctor_prescribe_medicine(request, patient_id):
         doctor = request.POST.get('doctor')
         medicine_name = request.POST.get('medicine_name')
         medicine_description = request.POST.get('medicine_description')
-        medicine = models.Prescription.objects.create(
-            patient=patient,
-            doctor=doctor,
-            medicine_name=medicine_name,
-            medicine_description=medicine_description
-        )
-        medicine.save()
+        # medicine = models.Prescription.objects.create(
+        #     patient=patient,
+        #     doctor=doctor,
+        #     medicine_name=medicine_name,
+        #     medicine_description=medicine_description
+        # )
+        # medicine.save()
+        print(doctor, patient, medicine_name, medicine_description)
         messages.success(request, 'Patient medicine added successfully')
         return redirect('doctor-dashboard')
     return render(request, 'hospital/doctor-prescribe-meds.html', context)
@@ -461,7 +462,7 @@ def doctor_prescribe_test(request, patient_id):
         # test.save()
         print(doctor, patient, test_name)
         messages.success(request, 'Patient test added successfully')
-        return redirect('doctor_dashboard')
+        return redirect('doctor-dashboard')
     return render(request, 'hospital/doctor-prescribe-test.html', context)
 
 # doctor dashboard functionality to view all information of a patient
