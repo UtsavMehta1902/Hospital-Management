@@ -19,7 +19,6 @@ from django.conf import settings
 from django.db.models import Q
 import datetime
 
-slots = [()]
 # Create your views here.
 
 def home_view(request):
@@ -36,20 +35,23 @@ def login_doctor(request):
             db_user = models.DB_User.objects.get(user=user, type='Doctor')
             if db_user is not None:
                 login(request, user)
-                return redirect('doctor_dashboard')
+                return redirect('/doctor-dashboard')
             else:
                 messages.error(request, 'You are not a doctor')
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'hospital/doctor_login.html')
+    return render(request, 'hospital/doctor-login.html')
 
-# @login_required(login_url='doctorlogin')
-# def doctor_dashboard(request):
-#     context = {
-#         'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
-#         'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
-#     }
-#     return render(request, 'hospital/doctor_dashboard.html', context)
+@login_required(login_url='doctorlogin')
+def doctor_dashboard(request):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': []
+    }
+    Doctor = models.DB_User.objects.get(user=request.user, type='Doctor')
+    for appointment in models.Appointment.objects.filter(doctor=Doctor):
+        context['patients'].append(appointment.patient)
+    return render(request, 'hospital/doctor_dashboard.html', context)
 
 def login_frontdesk(request):
     if request.method == 'POST':
@@ -60,12 +62,12 @@ def login_frontdesk(request):
             db_user = models.DB_User.objects.get(user=user, type='FrontDesk')
             if db_user is not None:
                 login(request, user)
-                return redirect('frontdesk_dashboard')
+                return redirect('/frontdesk_dashboard')
             else:
                 messages.error(request, 'You are not a frontdesk operator')
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'hospital/frontdesk_login.html')
+    return render(request, 'hospital/doctor-login.html')
 
 def login_dataentry(request):
     if request.method == 'POST':
@@ -76,30 +78,43 @@ def login_dataentry(request):
             db_user = models.DB_User.objects.get(user=user, type='DataEntry')
             if db_user is not None:
                 login(request, user)
-                return redirect('dataentry_dashboard')
+                return redirect('/dataentry-dashboard')
             else:
                 messages.error(request, 'You are not a data entry operator')
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'hospital/dataentry_login.html')
+    return render(request, 'hospital/doctor-login.html')
 
 @login_required(login_url='dataentrylogin')
 def dataentry_dashboard(request):
     context = {
         'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
-        'patients': models.Patient.objects.all(),
+        'tests': [],
+    }
+    for test in models.Test_Results.objects.all():
+        if test.test_results == None or test.test_results== '':
+            if test.test_slot is not None:
+                context['tests'].append(test)
+    return render(request, 'hospital/dataentry-dashboard.html', context)
+
+@login_required(login_url='dataentrylogin')
+def add_test_results(request, id, name):
+    context = {
+        'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
     }
     if request.method == 'POST':
-        patientId = request.POST.get('patientId')
-        test_name = request.POST.get('test_name')
-        test = models.Test_Results.objects.get(patientId=patientId, test_name=test_name)
-        test.test_results = request.POST.get('test_result')
-        test.image_results = request.FILES.get('image_results')
+        patient_id = id
+        Patient = models.Patient.objects.get(patientId=patient_id)
+        testname = name
+        test = models.Test_Results.objects.get(patient=Patient, test_name=testname)
+        test_results = request.POST.get('test_results')
+        test.test_results = test_results
+        # image_results = request.FILES.get('image_results')
+        # test.image_results = image_results
         test.save()
-            
-        messages.success(request, 'Patient test results added successfully')
-        return redirect('dataentry_dashboard')
-    return render(request, 'hospital/dataentry_dashboard.html', context)
+        messages.success(request, 'Test results added successfully')
+        return redirect('/dataentry-dashboard')
+    return render(request, 'hospital/dataentry-add-test-results.html', context)
 
 def logout_doctor(request):
     logout(request)
@@ -451,7 +466,7 @@ def doctorclick_view(request):
     if request.user.is_authenticated:
         if models.DB_User.objects.get(user=request.user, type='Doctor'):
             return HttpResponseRedirect('doctor_dashboard')
-    return redirect('doctorlogin')
+    return redirect('/doctorlogin')
 
 
 #for showing signup/login button for patient(by sumit)
@@ -459,16 +474,13 @@ def frontdeskclick_view(request):
     if request.user.is_authenticated:
         if models.DB_User.objects.get(user=request.user, type='FrontDesk'):
             return HttpResponseRedirect('frontdesk_dashboard')
-    return redirect('frontdesklogin')
+    return redirect('/frontdesklogin')
 
 def dataentryclick_view(request):
     if request.user.is_authenticated:
         if models.DB_User.objects.get(user=request.user, type='DataEntry'):
             return HttpResponseRedirect('dataentry_dashboard')
-    return redirect('dataentrylogin')
-
-
-
+    return redirect('/dataentrylogin')
 
 def admin_signup_view(request):
     form = forms.AdminSigupForm()

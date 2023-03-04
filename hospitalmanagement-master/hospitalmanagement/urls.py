@@ -16,16 +16,10 @@ urlpatterns = [
     path('doctorclick', views.doctorclick_view),
     path('frontdeskclick', views.frontdeskclick_view),
     path('dataentryclick', views.dataentryclick_view),
-
-    # path('adminsignup', views.admin_signup_view),
-    # path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
-    # path('patientsignup', views.patient_signup_view),
     
-    
-    path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
-    path('doctorlogin', LoginView.as_view(template_name='hospital/doctorlogin.html')),
-    path('patientlogin', LoginView.as_view(template_name='hospital/patientlogin.html')),
-
+    path('frontdesklogin', views.login_frontdesk, name='login_frontdesk'),
+    path('doctorlogin', views.login_doctor, name='login_doctor'),
+    path('dataentrylogin', views.login_dataentry, name='login_dataentry'),
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     path('logout', LogoutView.as_view(template_name='hospital/index.html'),name='logout'),
@@ -62,6 +56,10 @@ urlpatterns = [
     path('admin-approve-appointment', views.admin_approve_appointment_view,name='admin-approve-appointment'),
     path('approve-appointment/<int:pk>', views.approve_appointment_view,name='approve-appointment'),
     path('reject-appointment/<int:pk>', views.reject_appointment_view,name='reject-appointment'),
+
+
+    path('dataentry-dashboard', views.dataentry_dashboard,name='dataentry-dashboard'),
+    path('dataentry/<int:id>/<str:name>', views.add_test_results, name='add_test_results')
 ]
 
 # --- FOR FrontDesk Related URLs (by Pranav) ---
