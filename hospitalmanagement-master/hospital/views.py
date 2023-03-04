@@ -67,11 +67,11 @@ def login_frontdesk(request):
             messages.error(request, 'Invalid credentials')
     return render(request, 'hospital/frontdesk_login.html')
 
-@login_required(login_url='frontdesklogin')
+# @login_required(login_url='frontdesklogin')
 def frontdesk_dashboard(request):
+    frontuser12 = models.DB_User.objects.get(id=4)
     context = {
-        'frontdesk.user.id' : models.DB_User.objects.get(user=request.user, type='FrontDesk').get_id,
-        'frontdesk.name': models.DB_User.objects.get(user=request.user, type='FrontDesk').get_name,
+        'frontdesk' : frontuser12,
     }
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -85,8 +85,8 @@ def frontdesk_dashboard(request):
         )        
         patient.save()
         messages.success(request, 'Patient added successfully')
-        return redirect('frontdesk_dashboard')
-    return render(request, 'hospital/frontdesk_dashboard.html', context)
+        return redirect('frontdesk-dashboard')
+    return render(request, 'hospital/frontdesk-add-patient.html', context)
 
 def login_dataentry(request):
     if request.method == 'POST':

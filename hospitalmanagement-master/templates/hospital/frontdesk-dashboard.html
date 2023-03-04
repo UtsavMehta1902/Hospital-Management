@@ -1,0 +1,246 @@
+{% extends 'hospital/dashboard-doctor-base.html' %} {% load static %}
+
+{% block doctor-name %}
+{{doctor.user.first_name}} {{doctor.user.last_name}}
+{% endblock doctor-name %}
+
+{% block content %} 
+<style>
+  #example_filter > label{
+    color: #00425A;
+    font-size: larger;
+  }
+
+  #example_info{
+    color: #00425A;
+  }
+
+  #example_previous{
+    color: #00425A !important;
+  }
+
+  #example_next{
+    color: #00425A !important;
+  }
+
+  #example2_filter > label{
+    color: #00425A;
+    font-size: larger;
+  }
+
+  #example2_info{
+    color: #00425A;
+  }
+
+  #example2_previous{
+    color: #00425A !important;
+  }
+
+  #example2_next{
+    color: #00425A !important;
+  }
+</style>
+
+<style>
+  h1 {
+    font-size: 3em;
+    font-weight: 300;
+    line-height: 1em;
+    text-align: center;
+    padding: 1rem;
+    color: #4dc3fa;
+    margin: 1rem;
+  }
+
+  h3 {
+    font-size: 1em;
+    font-weight: 300;
+    text-align: center;
+    display: block;
+    line-height: 1em;
+    padding-bottom: 2em;
+    color: #fb667a;
+  }
+
+  .container th h1 {
+    font-weight: bold;
+    font-size: 1em;
+    text-align: left;
+    padding: 0rem;
+    color: #FC7300;
+  }
+
+  .container td {
+    font-weight: normal;
+    font-size: 1em;
+    -webkit-box-shadow: 0 2px 2px -2px #0e1119;
+    -moz-box-shadow: 0 2px 2px -2px #0e1119;
+    box-shadow: 0 2px 2px -2px #0e1119;
+  }
+
+  .container {
+    text-align: left;
+    overflow: hidden;
+    width: 80%;
+    margin: 0 auto;
+    display: table;
+    padding: 1rem 0 0 0;
+  }
+
+  .container td,
+  .container th {
+    padding-bottom: 2%;
+    padding-top: 2%;
+    padding-left: 2%;
+  }
+
+  /* Background-color of the odd rows */
+  .container tr:nth-child(odd) {
+    background-color: #0c5c48;
+  }
+
+  /* Background-color of the even rows */
+  .container tr:nth-child(even) {
+    background-color: #00425A;
+  }
+
+  .container th {
+    background-color: #00425A;
+  }
+
+  .container tr:hover {
+    background-color: #464a52;
+    -webkit-box-shadow: 0 6px 6px -6px #0e1119;
+    -moz-box-shadow: 0 6px 6px -6px #0e1119;
+    box-shadow: 0 6px 6px -6px #0e1119;
+  }
+
+  .container td:hover {
+    background-color: #8ac8bf;
+    color: #185875;
+    font-weight: bold;
+
+    box-shadow: #78afa7 -1px 1px, #78afa7 -2px 2px, #78afa7 -3px 3px,
+      #78afa7 -4px 4px, #78afa7 -5px 5px, #78afa7 -6px 6px;
+    transform: translate3d(6px, -6px, 0);
+
+    transition-delay: 0s;
+    transition-duration: 0.4s;
+    transition-property: all;
+    transition-timing-function: line;
+  }
+
+  .container td {
+    color: #FC7300;
+  }
+
+  .all {
+    background-color: #b9fbbe !important;
+    margin-top: 2rem;
+    border-radius: 1rem;
+  }
+
+  .btn {
+    max-width: 5rem;
+  }
+  .btn2 {
+    margin-right: 3rem;
+  }
+  .btn3 {
+    margin-left: 3rem;
+  }
+
+  td a {
+    text-decoration: none;
+    color: #FC7300;
+  }
+
+  .page-title {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #FC7300;
+  }
+
+  @media (max-width: 800px) {
+    .container td:nth-child(4),
+    .container th:nth-child(4) {
+      display: none;
+    }
+  }
+</style>
+<div class="all">
+<div class="container mt-4">
+  <h1 class="text-center page-title"><strong>Patients</strong></h1>
+  <table class="table table-hover" id="example">
+    <thead>
+      <tr>
+        <th><h1>Sr.No</h1></th>
+        <th><h1>Name</h1></th>
+        <th><h1>View Details</h1></th>
+        <th><h1>Prescribe</h1></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for patient in patients %}
+      <tr>
+        <td>{{patient.patientId}}.</td>
+        <td>{{patient.name}}</td>
+        <td>
+          <a
+            href="/patient/{{patient.patientId}}"
+            class="btn"
+            >Details&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
+          >
+        </td>
+        <td>
+          <a
+            href="/doctor-prescribe-meds/{{patient.patientId}}"
+            class="btn btn2"
+            >Medicines&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
+          > /
+          <a
+            href="/doctor-prescribe-tests/{{patient.patientId}}"
+            class="btn btn3"
+            >Tests&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+{% block js %}
+<script>
+    $(document).ready(function () {
+      $('#example').DataTable({
+        dom: 'Bfrtip',
+        buttons: []
+      });
+    });
+
+    $(document).ready(function () {
+      $('#example2').DataTable({
+        dom: 'Bfrtip',
+        buttons: []
+      });
+    });
+    
+    $(document).ready(function () {             
+    $('.dataTables_filter input[type="search"]').css(
+      {'width':'30vw','display':'inline-block', 'color':'black', 'margin': '1rem'}
+    );
+    });
+
+    {% if messages %}
+        {% for message in messages %}
+        alert("{{ message }}");
+        {% endfor %}
+    {% endif %}
+    
+</script>
+{% endblock %}
+{% endblock content %}
