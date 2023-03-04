@@ -62,7 +62,7 @@ def login_frontdesk(request):
             db_user = models.DB_User.objects.get(user=user, type='FrontDesk')
             if db_user is not None:
                 login(request, user)
-                return redirect('/frontdesk_dashboard')
+                return redirect('/frontdesk-dashboard')
             else:
                 messages.error(request, 'You are not a frontdesk operator')
         else:
@@ -158,9 +158,37 @@ def frontdesk_dashboard(request):
     frontuser12 = models.DB_User.objects.get(id=3) # after login workds replace frontuser12 with request.user
     today = datetime.datetime.today().replace(microsecond=0)
     # Get all appointments for today
-    appointments = models.Appointment.objects.filter(appointmentDateSlot = today)
+    all_appointments = models.Appointment.objects.all()
+    appointments = []
+    for appointment in all_appointments:
+        now = appointment.appointmentDateSlot
+        now_year = now.strftime("%Y")
+        now_month = now.strftime("%m")
+        now_date = now.strftime("%d")
+        n = today
+        n_year = n.strftime("%Y")
+        n_month = n.strftime("%m")
+        n_date = n.strftime("%d")
+        
+        if now_date == n_date and now_month == n_month and n_year == now_year:
+            appointments.append(appointment)
     #Get all tests for today
-    tests = models.Test_Results.objects.filter(test_slot = today)
+    all_tests = models.Test_Results.objects.all()
+    tests = []
+    for test in all_tests:
+        if test.test_slot == None:
+            continue
+        now = test.test_slot
+        now_year = now.strftime("%Y")
+        now_month = now.strftime("%m")
+        now_date = now.strftime("%d")
+        n = today
+        n_year = n.strftime("%Y")
+        n_month = n.strftime("%m")
+        n_date = n.strftime("%d")
+        
+        if now_date == n_date and now_month == n_month and n_year == now_year:
+            tests.append(test)
 
     context = {
         'frontdesk' : frontuser12,
@@ -281,33 +309,25 @@ def frontdesk_available_slots(doctor):
     # Get all appointments of the doctor
     appointments = models.Appointment.objects.filter(assignedDoctorId=doctor)
     # Get today Date from system
-    today = datetime.datetime.today().replace(microsecond=0)
+    # today = datetime.datetime.today().replace(microsecond=0)
+    today = datetime.datetime.now().replace(microsecond=0)
     next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
     available_slots = []
 
     for i in range(8,18):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
-        # Check if the slot is in the future
-        if slot > today:
             # Check if the slot is already booked
-            if not appointments.filter(appointmentDateSlot=slot).exists():
-                available_slots.append(slot)
+        if not appointments.filter(appointmentDateSlot=slot).exists():
+            available_slots.append(slot)
     for i in range(8,18):
         # Create a datetime object for each slot
         slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
-        # Check if the slot is in the future
-        if slot > today:
-            # Check if the slot is already booked
-            if not appointments.filter(appointmentDateSlot=slot).exists():
-                available_slots.append(slot)
-    
-    # # If size of available slots greater than 5 then return only 5 slots
-    # if len(available_slots) > 5:
-    #     return available_slots[:5]
-    
-    return available_slots[0]
+        # Check if the slot is already booked
+        if not appointments.filter(appointmentDateSlot=slot).exists():
+            available_slots.append(slot)
 
+    return available_slots[0]
 
 def frontdesk_schedule_tests(request):
     P = models.Patient.objects.all()
@@ -350,7 +370,7 @@ def frontdesk_schedule_tests(request):
 def frontdesk_availaible_test_slot(test_name):
     tests = models.Test.objects.filter(test_name=test_name)
     # Get today Date from system
-    today = datetime.datetime.today().replace(microsecond=0)
+    today = datetime.datetime.now().replace(microsecond=0)
     next_day = datetime.datetime.today().replace(
         microsecond=0) + datetime.timedelta(days=1)
     available_slots = []
@@ -358,23 +378,18 @@ def frontdesk_availaible_test_slot(test_name):
     for i in range(8, 18):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
-        # Check if the slot is in the future
-        if slot > today:
             # Check if the slot is already booked
-            if not tests.filter(test_slot=slot).exists():
-                available_slots.append(slot)
+        if not tests.filter(test_slot=slot).exists():
+            available_slots.append(slot)
     for i in range(8, 18):
         # Create a datetime object for each slot
         slot = datetime.datetime(
             next_day.year, next_day.month, next_day.day, i, 0, 0)
-        # Check if the slot is in the future
-        if slot > today:
-            # Check if the slot is already booked
-            if not tests.filter(test_slot=slot).exists():
-                available_slots.append(slot)
+        # Check if the slot is already booked
+        if not tests.filter(test_slot=slot).exists():
+            available_slots.append(slot)
 
     return available_slots[0]
-
 def frontdesk_pending_tests(id):
     tests = models.Test.objects.filter(patient=id)
     # Now among these tests remove those which are already done

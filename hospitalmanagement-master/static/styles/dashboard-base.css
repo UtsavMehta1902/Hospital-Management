@@ -32,9 +32,10 @@ body {
 
 .option {
   width: 15vw;
-  height: 90vh;
+  display: block;
+  overflow: auto;
   padding: 0 0.5rem 1.5rem;
-  margin: 0 0.5rem;
+  margin: 0 0.5rem ;
   float: left;
   background-color: #1F8A70;
   border-radius: 1rem;
