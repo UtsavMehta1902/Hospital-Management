@@ -69,7 +69,18 @@ def frontdesk_dashboard(request):
         'frontdesk.name': models.DB_User.objects.get(user=request.user, type='FrontDesk').get_name,
         'frontdesk.address': models.DB_User.objects.get(user=request.user, type='FrontDesk').address,
         'frontdesk.mobile': models.DB_User.objects.get(user=request.user, type='FrontDesk').mobile,
+        'patients': [],
     }
+    for patient in models.Patient.objects.all():
+        data = {
+            'patient.user.id': patient.get_id,
+            'patient.name': patient.get_name,
+        }
+        context['patients'].append(data)
+    return render(request, 'hospital/frontdesk_dashboard.html', context)
+
+@login_required(login_url='frontdesklogin')
+def add_patient(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         address = request.POST.get('address')
@@ -82,8 +93,7 @@ def frontdesk_dashboard(request):
         )        
         patient.save()
         messages.success(request, 'Patient added successfully')
-        return redirect('frontdesk_dashboard')
-    return render(request, 'hospital/frontdesk_dashboard.html', context)
+    return redirect('frontdesk_dashboard/add_patient')
 
 def login_dataentry(request):
     if request.method == 'POST':
@@ -131,8 +141,7 @@ def add_test_results(request):
         test.save()
             
         messages.success(request, 'Patient test results added successfully')
-
-    return redirect('dataentry_dashboard')
+    return redirect('dataentry_dashboard/add_test_results')
 
 def logout_doctor(request):
     logout(request)
@@ -148,6 +157,7 @@ def logout_dataentry(request):
     logout(request)
     messages.success(request, 'You have been logged out')
     return redirect('')
+
 def schedule_appointment(request):
     # In context also add slot availability for each doctor by calling a function
     doctors = models.DB_User.objects.filter(type='Doctor')
