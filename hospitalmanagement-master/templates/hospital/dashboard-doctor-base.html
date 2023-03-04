@@ -30,7 +30,7 @@
       <p class="tagline">
         We hope you visit us again.
       </p>
-      <div class="name"><button>Utsav Mehta</button></div>
+      <div class="name"><button>{% block doctor-name %}{% endblock doctor-name %}</button></div>
       <div class="clear"></div>
       <ul class="menu">
         <a href="/doctor-dashboard">
@@ -54,7 +54,7 @@
           <bold>1</bold>
         </i>
         <div class="logout" ng-controller="coin">
-          <button class="btc-price"><a href="logout">Logout</a></button>
+          <button class="btc-price"><a href="/logout">Logout</a></button>
         </div>
       </div>
       {% block content %}

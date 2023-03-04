@@ -210,16 +210,17 @@ def doctor_dashboard(request):
     appointments = models.Appointment.objects.filter(doctor=doctor12)
     patients = [appointment.patient for appointment in appointments]
     context = {
-        # 'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'doctor': doctor12,
         'patients': patients,
     }
     return render(request, 'hospital/doctor-dashboard.html', context)
 
 # doctor dashboard functionality to prescribe medicine and add it to model Prescription 
-def doctor_prescribe_medicine(request):
+def doctor_prescribe_medicine(request, patient_id):
+    doctor12 = models.DB_User.objects.get(id=6)
     context = {
-        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-        'patients': models.Patient.objects.all(),
+        'doctor': doctor12,
+        'patient': models.Patient.objects.get(patientId=patient_id),
     }
     if request.method == 'POST':
         patient = request.POST.get('patient')
@@ -235,7 +236,7 @@ def doctor_prescribe_medicine(request):
         medicine.save()
         messages.success(request, 'Patient medicine added successfully')
         return redirect('doctor_dashboard')
-    return render(request, 'hospital/doctor_dashboard/prescribe_medicine.html', context)
+    return render(request, 'hospital/doctor-prescribe-meds.html', context)
 
 # doctor dashboard functionality to prescribe test and add it to model Test_Results
 def doctor_prescribe_test(request):

@@ -1,48 +1,279 @@
-{% extends 'hospital/dashboard-doctor-base.html' %}
-{%load static%}
+{% extends 'hospital/dashboard-doctor-base.html' %} {%load static%}
+
+{% block doctor-name %}
+{{doctor.user.first_name}} {{doctor.user.last_name}}
+{% endblock doctor-name %}
+
 {% block content %}
 
-<head>
-  <style media="screen">
-    a:link {
-      text-decoration: none;
+<style>
+  #example_filter > label {
+    color: #00425a;
+    font-size: larger;
+  }
+
+  #example_info {
+    color: #00425a;
+  }
+
+  #example_previous {
+    color: #00425a !important;
+  }
+
+  #example_next {
+    color: #00425a !important;
+  }
+
+  #example2_filter > label {
+    color: #00425a;
+    font-size: larger;
+  }
+
+  #example2_info {
+    color: #00425a;
+  }
+
+  #example2_previous {
+    color: #00425a !important;
+  }
+
+  #example2_next {
+    color: #00425a !important;
+  }
+</style>
+
+<style>
+  h1 {
+    font-size: 3em;
+    font-weight: 300;
+    line-height: 1em;
+    text-align: center;
+    padding: 1rem;
+    color: #4dc3fa;
+    margin: 1rem;
+  }
+
+  .container th h1 {
+    font-weight: bold;
+    font-size: 1em;
+    text-align: left;
+    padding: 0rem;
+    color: #fc7300;
+  }
+
+  .container td {
+    font-weight: normal;
+    font-size: 1em;
+    -webkit-box-shadow: 0 2px 2px -2px #0e1119;
+    -moz-box-shadow: 0 2px 2px -2px #0e1119;
+    box-shadow: 0 2px 2px -2px #0e1119;
+  }
+
+  .container {
+    text-align: left;
+    overflow: hidden;
+    width: 80%;
+    margin: 0 auto;
+    display: table;
+    padding: 1rem 0 0 0;
+  }
+
+  .container td,
+  .container th {
+    padding-bottom: 2%;
+    padding-top: 2%;
+    padding-left: 2%;
+  }
+
+  /* Background-color of the odd rows */
+  .container tr:nth-child(odd) {
+    background-color: #0c5c48;
+  }
+
+  /* Background-color of the even rows */
+  .container tr:nth-child(even) {
+    background-color: #00425a;
+  }
+
+  .container th {
+    background-color: #00425a;
+  }
+
+  .container tr:hover {
+    background-color: #464a52;
+    -webkit-box-shadow: 0 6px 6px -6px #0e1119;
+    -moz-box-shadow: 0 6px 6px -6px #0e1119;
+    box-shadow: 0 6px 6px -6px #0e1119;
+  }
+
+  .container td:hover {
+    background-color: #8ac8bf;
+    color: #185875;
+    font-weight: bold;
+
+    box-shadow: #78afa7 -1px 1px, #78afa7 -2px 2px, #78afa7 -3px 3px,
+      #78afa7 -4px 4px, #78afa7 -5px 5px, #78afa7 -6px 6px;
+    transform: translate3d(6px, -6px, 0);
+
+    transition-delay: 0s;
+    transition-duration: 0.4s;
+    transition-property: all;
+    transition-timing-function: line;
+  }
+
+  .container td {
+    color: #fc7300;
+  }
+
+  .all {
+    background-color: #b9fbbe !important;
+    margin-top: 2rem;
+    border-radius: 1rem;
+  }
+
+  .btn {
+    max-width: 5rem;
+  }
+  .btn2 {
+    margin-right: 3rem;
+  }
+  .btn3 {
+    margin-left: 3rem;
+  }
+
+  td a {
+    text-decoration: none;
+    color: #fc7300;
+  }
+
+  .page-title {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #fc7300;
+  }
+
+  .patient-info {
+    background-color: #00425a !important;
+    padding: 1.5rem 1.5rem 0;
+    border-radius: 1rem;
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  .patient-info h3 {
+    font-size: 1rem;
+    display: block;
+    line-height: 1rem;
+    padding-bottom: 0.5rem;
+    color: #fc7300;
+    max-width: 100%;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .info-category {
+    color: #BFDB38;
+    display: inline-block;
+  }
+
+  @media (max-width: 800px) {
+    .container td:nth-child(4),
+    .container th:nth-child(4) {
+      display: none;
     }
-
-    h6 {
-      text-align: center;
-    }
-
-    .row {
-      margin: 100px;
-    }
-  </style>
-</head>
-
-<div class="container">
-
-    <form  action="/search" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
- 
-
-  {% if patient %}
-  <div class="panel panel-primary">
-    <table class="table table-hover" id="dev-table">
-      <tr>
-        <td>{{patient.id}}</td>
-        <td>{{patient.name}}</td>
-        <td>{{patient.address}}</td>
-        <td>{{patient.mobile}}</td>
-        <td>{{patient.room}}</td>
-        <td>{{patient.status}}</td>
-      </tr>
+  }
+</style>
+<div class="all">
+  <div class="container mt-4">
+    <div class="patient-info">
+      <h3><p class="info-category">Id:</p> {{patient.patientId}}</h3>
+      <h3><p class="info-category">Name:</p> {{patient.name}}</h3>
+      <h3><p class="info-category">Address:</p> {{patient.address}}</h3>
+      <h3><p class="info-category">Mobile:</p> {{patient.mobile}}</h3>
+      {% if patient.roomNumber %}
+      <h3><p class="info-category">Room Number:</p> {{patient.roomNumber.room_number}}</h3>
+      {% endif %} 
+      {% if patient.admitDate %}
+      <h3><p class="info-category">Admit Date:</p> {{patient.admitDate}}</h3>
+      {% endif %} 
+      {% if patient.dischargeDate %}
+      <h3><p class="info-category">Discharge Date:</p> {{patient.dischargeDate}}</h3>
+      {% endif %}
+      <h3><p class="info-category">Status:</p> {{patient.status}}</h3>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <h1 class="text-center page-title"><strong>Test Results</strong></h1>
+    <table class="table table-hover" id="example">
+      <thead>
+        <tr>
+          <th><h1>Index</h1></th>
+          <th><h1>Test Name</h1></th>
+          <th><h1>Test Results</h1></th>
+          <th><h1>Test Slot</h1></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in test_results %}
+        <tr>
+          <td>{{forloop.counter}}.</td>
+          <td>{{result.test_name}}</td>
+          <td>{{result.test_results}}</td>
+          <td>{{result.test_slot}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
   </div>
-  {%else%}
-  <br><br><br>
-  <h4 style="text-align: center;color: red;">No Patient Found !!!</h4>
-  {% endif %}
+  <div class="container mt-4">
+    <h1 class="text-center page-title"><strong>Prescriptions</strong></h1>
+    <table class="table table-hover" id="example2">
+      <thead>
+        <tr>
+          <th><h1>Index</h1></th>
+          <th><h1>Medicine Name</h1></th>
+          <th><h1>Medicine Description</h1></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prescription in prescriptions %}
+        <tr>
+          <td>{{forloop.counter}}.</td>
+          <td>{{prescription.medicine_name}}</td>
+          <td>{{prescription.medicine_description}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+{% block js %}
+<script>
+  $(document).ready(function () {
+    $("#example").DataTable({
+      dom: "Bfrtip",
+      buttons: [],
+    });
+  });
+
+  $(document).ready(function () {
+    $("#example2").DataTable({
+      dom: "Bfrtip",
+      buttons: [],
+    });
+  });
+
+  $(document).ready(function () {
+    $('.dataTables_filter input[type="search"]').css({
+      width: "30vw",
+      display: "inline-block",
+      color: "black",
+      margin: "1rem",
+    });
+  });
+</script>
+{% endblock js %}
 {% endblock content %}

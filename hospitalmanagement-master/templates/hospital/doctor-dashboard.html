@@ -1,5 +1,10 @@
-{% extends 'hospital/dashboard-doctor-base.html' %} {% load static %} {% block content %}
+{% extends 'hospital/dashboard-doctor-base.html' %} {% load static %}
 
+{% block doctor-name %}
+{{doctor.user.first_name}} {{doctor.user.last_name}}
+{% endblock doctor-name %}
+
+{% block content %} 
 <style>
   #example_filter > label{
     color: #00425A;
@@ -172,7 +177,6 @@
         <th><h1>Name</h1></th>
         <th><h1>View Details</h1></th>
         <th><h1>Prescribe</h1></th>
-        <th><h1>View History</h1></th>
       </tr>
     </thead>
     <tbody>
@@ -189,7 +193,7 @@
         </td>
         <td>
           <a
-            href=""
+            href="/doctor-prescribe-meds/{{patient.patientId}}"
             class="btn btn2"
             >Medicines&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           > /
@@ -197,13 +201,6 @@
             href=""
             class="btn btn3"
             >Tests&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
-          >
-        </td>
-        <td>
-          <a
-            href=""
-            class="btn"
-            >History&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
         </td>
       </tr>
