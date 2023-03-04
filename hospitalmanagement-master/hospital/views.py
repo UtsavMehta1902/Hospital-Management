@@ -412,6 +412,8 @@ def pending_test_results(request):
         test_result = request.POST.get('test_result')
         test = models.Test.objects.get(id=testId)
         test.test_result = test_result
+        # Also upload the image result
+        test.image_result = request.FILES['image_result']
         test.save()
         messages.success(request, 'Test result added successfully')
         return redirect('dataentry_dashboard/pending_test_results')
@@ -602,6 +604,10 @@ def pending_test_results(request):
         return redirect('dataentry_dashboard/pending_test_results')
     return render(request, 'hospital/dataentry_dashboard/pending_test_results.html', context)
 
+# def add_test_result(test_id):
+#     test = models.Test.objects.get(id=test_id)
+#     test.test_result = test_result
+#     test.save()
 # def add_test_result(test_id):
 #     test = models.Test.objects.get(id=test_id)
 #     test.test_result = test_result
