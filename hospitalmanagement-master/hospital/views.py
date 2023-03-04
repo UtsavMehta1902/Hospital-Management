@@ -19,7 +19,6 @@ from django.conf import settings
 from django.db.models import Q
 import datetime
 
-slots = [()]
 # Create your views here.
 
 def home_view(request):
@@ -43,13 +42,16 @@ def login_doctor(request):
             messages.error(request, 'Invalid credentials')
     return render(request, 'hospital/doctor-login.html')
 
-# @login_required(login_url='doctorlogin')
-# def doctor_dashboard(request):
-#     context = {
-#         'doctor.user.id' : models.DB_User.objects.get(user=request.user, type='Doctor').get_id,
-#         'doctor.name': models.DB_User.objects.get(user=request.user, type='Doctor').get_name,
-#     }
-#     return render(request, 'hospital/doctor_dashboard.html', context)
+@login_required(login_url='doctorlogin')
+def doctor_dashboard(request):
+    context = {
+        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+        'patients': []
+    }
+    for Patient in models.Patient.objects.all():
+        if request.user in models.Appointment.objects.filter(patient=Patient).values_list('doctor', flat=True):
+            context['patients'].append(Patient)
+    return render(request, 'hospital/doctor_dashboard.html', context)
 
 def login_frontdesk(request):
     if request.method == 'POST':
@@ -70,9 +72,13 @@ def login_frontdesk(request):
 @login_required(login_url='frontdesklogin')
 def frontdesk_dashboard(request):
     context = {
-        'frontdesk.user.id' : models.DB_User.objects.get(user=request.user, type='FrontDesk').get_id,
-        'frontdesk.name': models.DB_User.objects.get(user=request.user, type='FrontDesk').get_name,
+        'frontdesk': models.DB_User.objects.get(user=request.user, type='FrontDesk'),
+        'patients': models.Patient.objects.all(),
     }
+    return render(request, 'hospital/frontdesk_dashboard.html', context)
+
+@login_required(login_url='frontdesklogin')
+def add_patient(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         address = request.POST.get('address')
@@ -82,11 +88,11 @@ def frontdesk_dashboard(request):
             name=name,
             address=address,
             mobile=mobile,
-        )        
+        )
         patient.save()
         messages.success(request, 'Patient added successfully')
-        return redirect('frontdesk_dashboard')
-    return render(request, 'hospital/frontdesk_dashboard.html', context)
+    return render(request, 'hospital/add_patient.html')
+        
 
 def login_dataentry(request):
     if request.method == 'POST':
@@ -108,19 +114,27 @@ def login_dataentry(request):
 def dataentry_dashboard(request):
     context = {
         'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
-        'patients': models.Patient.objects.all(),
+        'tests': [],
     }
-    if request.method == 'POST':
-        patientId = request.POST.get('patientId')
-        test_name = request.POST.get('test_name')
-        test = models.Test_Results.objects.get(patientId=patientId, test_name=test_name)
-        test.test_results = request.POST.get('test_result')
-        test.image_results = request.FILES.get('image_results')
-        test.save()
-            
-        messages.success(request, 'Patient test results added successfully')
-        return redirect('dataentry_dashboard')
+    for test in models.Test_Results.objects.all():
+        if test.test_results == None:
+            context['tests'].append(test)
     return render(request, 'hospital/dataentry_dashboard.html', context)
+
+@login_required(login_url='dataentrylogin')
+def add_test_results(request):
+    if request.method == 'POST':
+        patient_id = request.POST.get('patient_id')
+        Patient = models.Patient.objects.get(patientId=patient_id)
+        testname = request.POST.get('test_name')
+        test = models.Test_Results.objects.get(patient=Patient, test_name=testname)
+        test_results = request.POST.get('test_results')
+        test.test_results = test_results
+        image_results = request.FILES.get('image_results')
+        test.image_results = image_results
+        test.save()
+        messages.success(request, 'Test results added successfully')
+    return render(request, 'hospital/add_test_results.html')
 
 def logout_doctor(request):
     logout(request)
