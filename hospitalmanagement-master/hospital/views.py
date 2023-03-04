@@ -100,9 +100,22 @@ def login_dataentry(request):
 @login_required(login_url='dataentrylogin')
 def dataentry_dashboard(request):
     context = {
-        'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
-        'patients': models.Patient.objects.all(),
+        'dataentry.user.id':models.DB_User.objects.get(user=request.user, type='DataEntry').get_id,
+        'dataentry.name':models.DB_User.objects.get(user=request.user, type='DataEntry').get_name, 
+        'patients': [],
     }
+
+    for patient in models.Patient.objects.all():
+        if models.Test_Results.objects.filter(patientId=patient.id).test_results ==  None:
+            data = {
+                'patient.user.id': patient.get_id,
+                'patient.name': patient.get_name,
+            }
+            context['patients'].append(data)
+    return render(request, 'hospital/dataentry_dashboard.html', context)
+
+@login_required(login_url='dataentrylogin')
+def add_test_results(request):
     if request.method == 'POST':
         patientId = request.POST.get('patientId')
         test_name = request.POST.get('test_name')
@@ -112,8 +125,8 @@ def dataentry_dashboard(request):
         test.save()
             
         messages.success(request, 'Patient test results added successfully')
-        return redirect('dataentry_dashboard')
-    return render(request, 'hospital/dataentry_dashboard.html', context)
+
+    return redirect('dataentry_dashboard')
 
 def logout_doctor(request):
     logout(request)
