@@ -22,9 +22,9 @@ urlpatterns = [
     # path('patientsignup', views.patient_signup_view),
     
     
-    path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
     path('doctorlogin', LoginView.as_view(template_name='hospital/doctorlogin.html')),
-    path('patientlogin', LoginView.as_view(template_name='hospital/patientlogin.html')),
+    path('frontdesklogin', LoginView.as_view(template_name='hospital/frontdesklogin.html')),
+    path('dataentrylogin', LoginView.as_view(template_name='hospital/dataentrylogin.html')),
 
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
