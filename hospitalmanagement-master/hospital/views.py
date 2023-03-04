@@ -32,8 +32,7 @@ def login_doctor(request):
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
         if user is not None:
-            db_user = models.DB_User.objects.get(user=user, type='Doctor')
-            if db_user is not None:
+            if is_doctor(user):
                 login(request, user)
                 return redirect('/doctor-dashboard')
             else:
@@ -42,25 +41,13 @@ def login_doctor(request):
             messages.error(request, 'Invalid credentials')
     return render(request, 'hospital/doctor-login.html')
 
-# @login_required(login_url='doctorlogin')
-# def doctor_dashboard(request):
-#     context = {
-#         'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-#         'patients': []
-#     }
-#     Doctor = models.DB_User.objects.get(user=request.user, type='Doctor')
-#     for appointment in models.Appointment.objects.filter(doctor=Doctor):
-#         context['patients'].append(appointment.patient)
-#     return render(request, 'hospital/doctor_dashboard.html', context)
-
 def login_frontdesk(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
         if user is not None:
-            db_user = models.DB_User.objects.get(user=user, type='FrontDesk')
-            if db_user is not None:
+            if is_frontdesk(user):
                 login(request, user)
                 return redirect('/frontdesk-dashboard')
             else:
@@ -75,8 +62,7 @@ def login_dataentry(request):
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
         if user is not None:
-            db_user = models.DB_User.objects.get(user=user, type='DataEntry')
-            if db_user is not None:
+            if is_dataentry(user):
                 login(request, user)
                 return redirect('/dataentry-dashboard')
             else:
@@ -84,6 +70,17 @@ def login_dataentry(request):
         else:
             messages.error(request, 'Invalid credentials')
     return render(request, 'hospital/doctor-login.html')
+
+# @login_required(login_url='doctorlogin')
+# def doctor_dashboard(request):
+#     context = {
+#         'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
+#         'patients': []
+#     }
+#     Doctor = models.DB_User.objects.get(user=request.user, type='Doctor')
+#     for appointment in models.Appointment.objects.filter(doctor=Doctor):
+#         context['patients'].append(appointment.patient)
+#     return render(request, 'hospital/doctor_dashboard.html', context)
 
 def is_doctor(user):
     return models.DB_User.objects.filter(user=user, type='Doctor').exists()
@@ -112,6 +109,9 @@ def dataentryclick_view(request):
         if is_dataentry(request.user):
             return HttpResponseRedirect('/dataentry-dashboard')
     return redirect('/dataentrylogin')
+
+def adminclick_view(request):
+    return redirect('/admin')
 
 def logout_view(request):
     logout(request)

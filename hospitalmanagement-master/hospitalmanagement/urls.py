@@ -72,6 +72,7 @@ urlpatterns = [
     path('doctorclick', views.doctorclick_view),
     path('frontdeskclick', views.frontdeskclick_view),
     path('dataentryclick', views.dataentryclick_view),
+    path('adminclick', views.adminclick_view),
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
 ]
