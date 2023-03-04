@@ -36,8 +36,8 @@
     color: #FC7300 !important;
     font-size: 2rem;
     font-weight: bold;
-    margin: 0 5rem 0 2rem;
-    width: 30rem;
+    margin: 0;
+    width: 22rem;
   }
 
   .container {
@@ -55,25 +55,27 @@
   .navbar {
     display: inline-block;
     justify-content: space-between;
-    width: 40rem;
+    width: 60rem;
   }
 
   .nav__list {
     display: flex;
     align-items: center;
-    width: auto;
+    width: 100%;
     padding: 0;
     margin: 0 3rem;
     list-style: none;
+    font-size: 0.9rem;
   }
 
   .nav__link {
-    margin-left: 0.5rem;
+    margin-left: 0.5em;
     padding: 1rem;
     text-decoration: none;
     text-transform: uppercase;
     margin: 0 0.7rem;
     color: #FC7300;
+    width: 100%;
   }
 
   .nav__list--primary {
@@ -88,7 +90,8 @@
   }
 
   .nav__item {
-    margin-top: 0.4rem;
+    margin: 0.4rem 1rem;
+    width: 9rem;
   }
 </style>
 
@@ -98,13 +101,13 @@
     <nav class="navbar">
       <ul class="nav__list nav__list--primary">
         <li class="nav__item">
-          <a href="/adminclick" class="nav__link">Admin</a>
+          <a href="/adminclick" class="nav__link">FrontDesk</a>
         </li>
         <li class="nav__item">
           <a href="/doctorclick" class="nav__link">Doctor</a>
         </li>
         <li class="nav__item">
-          <a href="/patientclick" class="nav__link">Patient</a>
+          <a href="/patientclick" class="nav__link">DataEntry</a>
         </li>
         <li class="nav__item">
           <a href="/aboutus" class="nav__link">About Us</a>
