@@ -117,24 +117,29 @@ def dataentry_dashboard(request):
         'tests': [],
     }
     for test in models.Test_Results.objects.all():
-        if test.test_results == None:
-            context['tests'].append(test)
+        if test.test_results == None or test.test_results== '':
+            if test.test_slot is not None:
+                context['tests'].append(test)
     return render(request, 'hospital/dataentry-dashboard.html', context)
 
 @login_required(login_url='dataentrylogin')
-def add_test_results(request):
+def add_test_results(request, id, name):
+    context = {
+        'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
+    }
     if request.method == 'POST':
-        patient_id = request.POST.get('patient_id')
+        patient_id = id
         Patient = models.Patient.objects.get(patientId=patient_id)
-        testname = request.POST.get('test_name')
+        testname = name
         test = models.Test_Results.objects.get(patient=Patient, test_name=testname)
         test_results = request.POST.get('test_results')
         test.test_results = test_results
-        image_results = request.FILES.get('image_results')
-        test.image_results = image_results
+        # image_results = request.FILES.get('image_results')
+        # test.image_results = image_results
         test.save()
         messages.success(request, 'Test results added successfully')
-    return render(request, 'hospital/add_test_results.html')
+        return redirect('/dataentry-dashboard')
+    return render(request, 'hospital/dataentry-add-test-results.html', context)
 
 def logout_doctor(request):
     logout(request)

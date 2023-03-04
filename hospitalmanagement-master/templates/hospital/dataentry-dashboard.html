@@ -169,7 +169,7 @@
 </style>
 <div class="all">
 <div class="container mt-4">
-  <h1 class="text-center page-title"><strong>Tests</strong></h1>
+  <h1 class="text-center page-title"><strong>Pending Tests</strong></h1>
   <table class="table table-hover" id="example">
     <thead>
       <tr>
@@ -182,16 +182,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for test in patients %}
+      {% for test in tests %}
       <tr>
-        <td>{{forloop.counter}}.</td>
+        <td>{{test.patient.patientId}}.</td>
         <td>{{test.patient.name}}</td>
-        <td>{{test.doctor.first_name}} {{test.doctor.last_name}}</td>
+        <td>{{test.doctor.user.first_name}} {{test.doctor.user.last_name}}</td>
         <td>{{test.test_name}}</td>
         <td>{{test.test_slot}}</td>
         <td>
           <a
-            href="/patient/{{patient.patientId}}"
+            href="/dataentry/{{test.patient.patientId}}/{{test.test_name}}"
             class="btn"
             >Add&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >

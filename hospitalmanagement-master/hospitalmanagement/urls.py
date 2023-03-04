@@ -60,6 +60,7 @@ urlpatterns = [
 
 
     path('dataentry-dashboard', views.dataentry_dashboard,name='dataentry-dashboard'),
+    path('dataentry/<int:id>/<str:name>', views.add_test_results, name='add_test_results')
 ]
 
 
