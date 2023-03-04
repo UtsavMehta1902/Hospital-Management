@@ -418,7 +418,7 @@ def pending_test_results(request):
         test.test_result = test_result
         test.save()
         messages.success(request, 'Test result added successfully')
-        return redirect('frontdesk_dashboard/pending_test_results')
+        return redirect('dataentry_dashboard/pending_test_results')
     return render(request, 'hospital/dataentry_dashboard/pending_test_results.html', context)
 # for showing signup/login button for admin(by sumit)
 # def adminclick_view(request):
