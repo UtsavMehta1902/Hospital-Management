@@ -75,6 +75,7 @@ urlpatterns +=[
     path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
     path('doctor-view-discharge-patient',views.doctor_view_discharge_patient_view,name='doctor-view-discharge-patient'),
     path('doctor-prescribe-meds/<int:patient_id>', views.doctor_prescribe_medicine,name='doctor-prescribe-meds'),
+    path('doctor-prescribe-tests/<int:patient_id>', views.doctor_prescribe_test,name='doctor-prescribe-test'),
     path('doctor-appointment', views.doctor_appointment_view,name='doctor-appointment'),
     path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
     path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),

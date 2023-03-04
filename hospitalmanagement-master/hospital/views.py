@@ -185,7 +185,6 @@ def schedule_appointment(request):
 
         messages.success(request, 'Appointment scheduled successfully')
         return redirect('frontdesk_dashboard/schedule_appointment')
-
     return render(request, 'hospital/frontdesk_dashboard/schedule_appointment.html', context)
 
 def available_slots(doctor):
@@ -440,28 +439,30 @@ def doctor_prescribe_medicine(request, patient_id):
         )
         medicine.save()
         messages.success(request, 'Patient medicine added successfully')
-        return redirect('doctor_dashboard')
+        return redirect('doctor-dashboard')
     return render(request, 'hospital/doctor-prescribe-meds.html', context)
 
 # doctor dashboard functionality to prescribe test and add it to model Test_Results
-def doctor_prescribe_test(request):
+def doctor_prescribe_test(request, patient_id):
+    doctor12 = models.DB_User.objects.get(id=6)
     context = {
-        'doctor': models.DB_User.objects.get(user=request.user, type='Doctor'),
-        'patients': models.Patient.objects.all(),
+        'doctor': doctor12,
+        'patient': models.Patient.objects.get(patientId=patient_id),
     }
     if request.method == 'POST':
         patient = request.POST.get('patient')
         doctor = request.POST.get('doctor')
         test_name = request.POST.get('test_name')
-        test = models.Test_Results.objects.create(
-            patient=patient,
-            doctor=doctor,
-            test_name=test_name,
-        )
-        test.save()
+        # test = models.Test_Results.objects.create(
+        #     patient=patient,
+        #     doctor=doctor,
+        #     test_name=test_name,
+        # )
+        # test.save()
+        print(doctor, patient, test_name)
         messages.success(request, 'Patient test added successfully')
         return redirect('doctor_dashboard')
-    return render(request, 'hospital/doctor_dashboard/prescribe_test.html', context)
+    return render(request, 'hospital/doctor-prescribe-test.html', context)
 
 # doctor dashboard functionality to view all information of a patient
 def doctor_view_patient(request, patient_id):

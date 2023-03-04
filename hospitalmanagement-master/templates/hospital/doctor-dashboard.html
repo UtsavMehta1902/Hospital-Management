@@ -198,7 +198,7 @@
             >Medicines&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           > /
           <a
-            href=""
+            href="/doctor-prescribe-tests/{{patient.patientId}}"
             class="btn btn3"
             >Tests&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
@@ -234,6 +234,12 @@
       {'width':'30vw','display':'inline-block', 'color':'black', 'margin': '1rem'}
     );
     });
+
+    {% if messages %}
+        {% for message in messages %}
+        alert("{{ message }}");
+        {% endfor %}
+    {% endif %}
     
 </script>
 {% endblock %}
