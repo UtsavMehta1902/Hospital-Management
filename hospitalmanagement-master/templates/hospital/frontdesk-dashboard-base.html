@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hospital Management</title>
+    <link
+      rel="stylesheet"
+      href="https://kit.fontawesome.com/9c1d5d1546.css"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'styles/dashboard-base.css' %}"
+    />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+  </head>
+  
+  <body>
+    <div class="option">
+      <div class="logo">
+        <img
+          src="{% static "images/LOGO.jpeg" %}" alt="John" style="padding: 0.5rem; border-radius: 1rem;"
+          alt="logo"
+        />
+      </div>
+      <p class="tagline">
+        Aarogyam Dhan Sampada
+      </p>
+      <div class="name"><button>{% block frontdesk-name %}{% endblock frontdesk-name %}</button></div>
+      <div class="clear"></div>
+      <ul class="menu">
+        <a href="/frontdesk-dashboard">
+          <i class="fa fa-dashboard"></i>
+            Dashboard
+        </a>
+        <a href="/frontdesk-dashboard">
+          <i class="fa-solid fa-person-circle-plus"></i>
+            Add Patient
+        </a>
+        <!-- schedule appoitment -->
+        <a href="/frontdesk-schedule-appointment">
+          <i class="fa-solid fa-calendar-plus"></i>
+            Schedule Appointment
+        </a>
+        <!-- Schedule Test -->
+        <a href="/frontdesk-schedule-test">
+          <i class="fa-solid fa-calendar-plus"></i>
+            Schedule Test
+        </a>
+        <br />
+        <!-- <a href="doctor-patients">
+          <i class="fa-solid fa-person-circle-plus"></i>
+            Patients
+        </a> -->
+      </ul>
+      <!-- <div class="info">
+        <p class="tagline"><i class="fas fa-phone"></i>&nbsp;&nbsp; +91 9328209239</p>
+      </div> -->
+    </div>
+
+    <div class="dashboard-heading">
+      <div class="panel">
+        <i class="fa-solid fa-bell">
+          <bold>1</bold>
+        </i>
+        <div class="logout" ng-controller="coin">
+          <button class="btc-price"><a href="/logout">Logout</a></button>
+        </div>
+      </div>
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </body>
+  <script
+    src="https://kit.fontawesome.com/9c1d5d1546.js"
+    crossorigin="anonymous"
+  ></script>
+</html>

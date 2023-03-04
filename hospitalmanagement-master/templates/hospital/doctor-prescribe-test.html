@@ -1,0 +1,147 @@
+{% extends 'hospital/dashboard-doctor-base.html' %} {% load widget_tweaks %}
+{% block doctor-name %} 
+{{doctor.user.first_name}} {{doctor.user.last_name}} 
+{% endblock doctor-name %}
+{% block content %}
+
+<style>
+
+  .container {
+    text-align: left;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto 1rem;
+    display: table;
+    padding: 1rem 0 0 0;
+  }
+
+  .all {
+    background-color: #b9fbbe !important;
+    margin: 2rem 0;
+    border-radius: 1rem;
+    display: flex;
+  }
+
+  .page-title {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #fc7300;
+  }
+
+  .patient-info {
+    background-color: #00425a !important;
+    padding: 1.5rem 1.5rem 0;
+    border-radius: 1rem;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .patient-info h3 {
+    font-size: 1rem;
+    display: block;
+    line-height: 1rem;
+    padding-bottom: 0.5rem;
+    color: #fc7300;
+    max-width: 100%;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .info-category {
+    color: #bfdb38;
+    display: inline-block;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .form-prescribe {
+    background-color: #00425a !important;
+    padding: 1.5rem 1.5rem 0;
+    border-radius: 1rem;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .form-prescribe label {
+    color: #fc7300 !important;
+    font-weight: bold;
+  }
+
+  .form-prescribe input {
+    width: 100%;
+    padding: 0.7rem 1.2rem;
+    margin: 8px 0;
+    box-sizing: border-box;
+    font-size: large;
+  }
+
+
+  .btn-register{
+    background-color: #fc7300;
+    color: white;
+    padding: 0.5rem;
+    margin: 2rem 33%;
+    width: 10rem;
+    }
+</style>
+
+<div class="all">
+  <div class="container mt-4">
+    <div class="patient-info">
+      <h3>
+        <p class="info-category">Id:</p>
+        {{patient.patientId}}
+      </h3>
+      <h3>
+        <p class="info-category">Name:</p>
+        {{patient.name}}
+      </h3>
+      <h3>
+        <p class="info-category">Address:</p>
+        {{patient.address}}
+      </h3>
+      <h3>
+        <p class="info-category">Mobile:</p>
+        {{patient.mobile}}
+      </h3>
+      {% if patient.roomNumber %}
+      <h3>
+        <p class="info-category">Room Number:</p>
+        {{patient.roomNumber.room_number}}
+      </h3>
+      {% endif %} {% if patient.admitDate %}
+      <h3>
+        <p class="info-category">Admit Date:</p>
+        {{patient.admitDate}}
+      </h3>
+      {% endif %} {% if patient.dischargeDate %}
+      <h3>
+        <p class="info-category">Discharge Date:</p>
+        {{patient.dischargeDate}}
+      </h3>
+      {% endif %}
+      <h3>
+        <p class="info-category">Status:</p>
+        {{patient.status}}
+      </h3>
+    </div>
+  </div>
+
+    <div class="container">
+        <div class="form-prescribe">
+            <form method="POST"> {% csrf_token %}
+        
+            <div class="row mt-4">
+                <div class="form-group col-md-12">
+                    <label>Name: </label>
+                    <input type="text" class="form-control mt-2" name="test_name" placeholder="Test Name" required>
+                </div>
+            </div>
+            <input type="text" class="form-control mt-2 hidden" name="doctor" value="{{doctor}}" required>
+            <input type="text" class="form-control mt-2 hidden" name="patient" value="{{patient}}" required>
+            <button type="submit" class="btn btn-outline-primary mt-4 btn-register">Prescribe</button>
+        </div>
+  </div>
+</div> 
+{% endblock content %}

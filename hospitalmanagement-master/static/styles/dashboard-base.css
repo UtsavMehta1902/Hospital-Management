@@ -1,0 +1,225 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700|Source+Sans+Pro:300,600");
+
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.logo {
+  display: inline-block;
+  font-weight: 700;
+  width: 10rem;
+  height: 8rem;
+  margin: 2rem 0 0 1.8rem;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+}
+
+.tagline {
+  color: #d4ff00;
+  padding: 1rem 1rem;
+  margin-top: -5px;
+}
+
+.info {
+  width: 100%;
+  margin: 1rem;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.option {
+  width: 15vw;
+  display: block;
+  overflow: auto;
+  padding: 0 0.5rem 1.5rem;
+  margin: 0 0.5rem ;
+  float: left;
+  background-color: #1F8A70;
+  border-radius: 1rem;
+}
+
+button {
+  background: #FC7300;
+  border: solid 6px #FC7300;
+  border-radius: 3px;
+  color: #ffffff;
+  font-weight: 700;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 1.2em;
+}
+
+.menu {
+  margin-top: 2rem;
+  width: 80%;
+  padding: 0px;
+  margin-left: 8px;
+  height: 15rem;
+}
+
+.menu a {
+  width: 80%;
+  color: #FC7300;
+  text-decoration: none;
+  margin: 15px 0px;
+  float: left;
+  display: block;
+  font-size: 1.3em;
+  padding: 1.5rem;
+  font-weight: bold;
+}
+
+.menu a:hover {
+  background-color: #00425A;
+  border-radius: 1rem;
+}
+
+.menu a i {
+  font-size: 1.5em;
+  color: #FC7300;
+  position: relative;
+  padding-right: 10px;
+  top: 3px;
+}
+
+.name {
+  margin: 0 auto;
+  width: 65%;
+}
+
+.clear {
+  clear: both;
+}
+
+.dashboard-heading {
+  width: 82%;
+  float: left;
+  background: #ffffff;
+  position: relative;
+  color: #73787c;
+  position: relative;
+}
+
+.dashboard-heading .panel {
+  padding-bottom: 2rem;
+  background-color: #00425A;
+  border-radius: 1rem;
+  padding-top: 1.5rem;
+}
+
+.dashboard-heading .panel i bold {
+  position: absolute;
+  font-size: 0.6em;
+  border-radius: 50%;
+  padding: 4px 6px;
+  background: #12abf7;
+  color: white;
+  font-weight: 700;
+  margin-top: -10px;
+}
+
+.logout {
+ display: inline-block;
+ margin-left: 88%;
+}
+
+.logout a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.btc-price {
+  color: white;
+}
+
+.dashboard-heading .panel i {
+  border-radius: 50%;
+  background: #f4f4f4;
+  padding: 8px;
+  border: solid 2px;
+  position: relative;
+  left: 20px;
+  cursor: pointer;
+}
+
+.dashboard-heading .all {
+  background: #f2f2f2;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.all .starter-stats .blok {
+  background: #ffffff;
+  width: 30%;
+  float: left;
+  margin: 20px 1.5%;
+  font-size: 1.1em;
+  font-family: "Source Sans Pro", sans-serif;
+  position: relative;
+}
+
+.blok i {
+  border-radius: 50%;
+  background: #12abf7;
+  padding: 10px;
+  color: white;
+  display: inline-block;
+  position: relative;
+  top: -20px;
+  margin-left: 20px;
+  margin-right: 5px;
+  font-size: 1.2em;
+}
+
+.blok .kl {
+  background: #978ded;
+}
+
+.blok .pl {
+  background: #facaee;
+}
+
+.blok .no {
+  display: inline-block;
+}
+
+.blok .no p:first-child {
+  font-weight: 700;
+  font-size: 0.8em;
+  position: relative;
+  top: 8px;
+}
+
+.blok .no p:nth-child(2) {
+  position: relative;
+  top: -10px;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.gains {
+  width: 80%;
+  padding: 20px 8%;
+  margin: 5px auto;
+  background: #ffffff;
+}
+
+.logout-button {
+    margin-left: 10rem;
+    padding: 3rem;
+}
+
+@media only screen and (max-width: 800px) {
+  .option {
+    width: 90%;
+    display: none;
+  }
+  .dashboard-heading {
+    width: 100%;
+  }
+  .blok i {
+    display: none;
+  }
+}

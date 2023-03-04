@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en" dir="ltr">
+{% extends 'hospital/homebase.html' %} {% load static %} {% block content %}
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>LazyCoder || sumit</title>
   <style media="screen">
     .jumbotron {
       margin-top: 0px;
       margin-bottom: 0px;
+      background-image: url('https://images.pexels.com/photos/247786/pexels-photo-247786.jpeg?cs=srgb&dl=pexels-pixabay-247786.jpg&fm=jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100vh;
     }
 
-    .jumbotron h1 {
+    .jumbotron h5,
+    h3 {
       text-align: center;
     }
 
@@ -20,30 +20,46 @@
       margin: 0px;
     }
   </style>
-  <title>sumit</title>
 </head>
 
-<body>
-  {% include "hospital/navbar.html" %}
-  <br><br>
-  <center>
-    <h3 class='alert alert-success' style="margin-bottom:0px;">About Us !</h3>
-  </center>
-  <div class="jumbotron" style="margin-bottom: 0px;margin-top: 0px;">
-    <h1 class="display-4">Hello</h1>
-    <p class="lead">A service dedicated to Hospital Admin, Doctor and Patient.</p>
-    <hr class="my-4">
-    <p>Explore our Website.</p>
-    <p class="lead">
-      <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
-    </p>
+<div class="jumbotron" style="margin-bottom: 0px; margin-top: 0px">
+  <div class="mask" style="background-color: rgba(255,255,255,0.45);">
+    <div class="d-flex justify-content-center aling-items-center h-100">
+      <div class="text-black">
+        <h1 class="mb-3">Apollo Hospital</h1>
+        <h5 class="mb-3">Vision</h5>
+        <h10 class="mb-3">Apollo's vision for the next phase of development is to 'Touch a Billion Lives'.</h10>
+        <h5 class="mb-3">Mission Statement</h5>
+        <h10 class="mb-3">“Our mission is to bring healthcare of International standards within the reach of every individual. We are
+          committed to the achievement and maintenance of excellence in education, research and healthcare for the
+          benefit of humanity”</h10>
+        <h5 class="mb-3">Our History</h5>
+        <h10 class="mb-3">Apollo Hospitals was established in 1983 by Dr. Prathap C Reddy, renowned as the architect of modern
+          healthcare in India. As the nation's first corporate hospital, Apollo Hospitals is acclaimed for pioneering the
+          private healthcare revolution in the country.
+          Apollo Hospitals has emerged as Asia's foremost integrated healthcare services provider and has a robust
+          presence across the healthcare ecosystem, including Hospitals, Pharmacies, Primary Care & Diagnostic Clinics
+          and several retail health models. The Group also has Telemedicine facilities across several countries, Health
+          Insurance Services, Global Projects Consultancy, Medical Colleges, Medvarsity for E-Learning, Colleges of
+          Nursing and Hospital Management and a Research Foundation. In addition, 'ASK Apollo' - an online consultation
+          portal and Apollo Home Health provide the care continuum.
+          The cornerstones of Apollo's legacy are its unstinting focus on clinical excellence, affordable costs, modern
+          technology and forward-looking research & academics. Apollo Hospitals was among the first few hospitals in the
+          world to leverage technology to facilitate seamless healthcare delivery. The organization embraced the rapid
+          advancement in medical equipments across the world, and pioneered the introduction of several cutting edge
+          innovations in India. Recently, South East Asia's first Proton Therapy Centre commenced operations at the Apollo
+          Centre in Chennai.
+          Since its inception, Apollo Hospitals has been honoured by the trust of over 150 million individuals who came
+          from 140 countries. At the core of Apollo's patient-centric culture is TLC (Tender Loving Care), the magic that
+          inspires hope amongst its patients.
+          As a responsible corporate citizen, Apollo Hospitals takes the spirit of leadership well beyond business and has
+          embraced the responsibility of keeping India healthy. Recognizing that Non Communicable Diseases (NCDs) are
+          the greatest threat to the nation, Apollo Hospitals is continuously educating people about preventive healthcare
+          as the key to wellness. Likewise, envisioned by Dr. Prathap C Reddy, the “Billion Hearts Beating Foundation”
+          endeavours to keep Indians heart-healthy.</h10>
+      </div>
+    </div>
   </div>
-  {% include "hospital/footer.html" %}
-</body>
-<!--
-developed By : sumit kumar
-facebook : fb.com/sumit.luv
-youtube : youtube.com/lazycoders
--->
+</div>
 
-</html>
+{% endblock content %}

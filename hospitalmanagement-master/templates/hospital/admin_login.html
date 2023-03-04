@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Hospital Management</title>
+
+
+  <style type="text/css">
+    body {
+      color: #00425A;
+      background-color: yellow;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #1F8A70, #00425A);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #00425A;
+      color: #fff;
+    }
+    .role{
+      background-color: rgb(5, 254, 242);
+    }
+  </style>
+</head>
+
+<body>
+  {% include "hospital/navbar.html" %}
+  <br>
+  <br>
+  <br><br>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="form">
+        <div class="note">
+          <p>Login Page</p>
+        </div>
+
+        <div class="form-content">
+          <div class="row">
+            <div class="col-md-6">
+
+              <div class="form-group">
+                {% render_field form.username class="form-control" placeholder="Username" %}
+              </div>
+
+            </div>
+            <div class="col-md-6">
+
+              <div class="form-group">
+                {% render_field form.password class="form-control" placeholder="Password" %}
+              </div>
+
+            </div>
+                  <br>
+                  <div>
+                    <label for="role">Select Role:</label>
+                    <select id="role" name="role" class="role">
+                      <option value="frontdesk" selected>Front Desk</option>
+                      <option value="dataentry">Data Entry</option>
+                      <option value="doctor">Doctor</option>
+                    </select><br><br>
+                  </div>
+                 
+          </div>
+          <button type="submit" class="btnSubmit">Login</button>
+          <!-- <div class="text-center">Do not have account? <a href="adminsignup">Signup here</a></div> -->
+        </div>
+      </div>
+    </div>
+
+  </form>
+
+  <br><br><br>
+  {% include "hospital/footer.html" %}
+</body>
+
+</html>

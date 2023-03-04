@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Hospital Management</title>
+
+  <style type="text/css">
+    .all {
+        margin: 2rem 0;
+        border-radius: 1rem;
+        display: flex;
+    }
+
+  .form-prescribe {
+    background-color: #00425a !important;
+    padding: 1.5rem 1.5rem 0;
+    border-radius: 1rem;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .form-prescribe label {
+    color: #fc7300 !important;
+    font-weight: bold;
+  }
+
+  .form-prescribe input {
+    width: 100%;
+    padding: 0.7rem 1.2rem;
+    margin: 8px 0;
+    box-sizing: border-box;
+    font-size: large;
+  }
+
+
+  .btn-register{
+    background-color: #fc7300;
+    color: white;
+    padding: 0.5rem;
+    margin: 2rem 33%;
+    width: 10rem;
+    border-color: #fc7300;
+    font-weight: bolder;
+    font-size: 1.2rem;
+    }
+  </style>
+</head>
+
+<body>
+  {% include "hospital/navbar.html" %}
+  <div class="all">
+  <div class="container">
+    
+    <div class="form-prescribe">
+        <form method="POST"> {% csrf_token %}
+    
+        <div class="row mt-4">
+            <div class="form-group col-md-12">
+                <label>Username: </label>
+                <input type="text" class="form-control mt-2" name="username" placeholder="username" required>
+            </div>
+        </div>
+    
+        <div class="row mt-4">
+            <div class="form-group col-md-12">
+                <label>Password: </label>
+                <input type="password" class="form-control mt-2" name="password" placeholder="password" required>
+            </div>
+        </div>
+        <button type="submit" class="btn-register">Login</button>
+    </div>
+</div>
+</div>
+  {% include "hospital/footer.html" %}
+</body>
+
+<script> 
+  {% if messages %}
+  {% for message in messages %}
+  alert("{{ message }}");
+  {% endfor %}
+  {% endif %}
+</script>
+
+</html>
