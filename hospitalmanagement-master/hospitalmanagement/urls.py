@@ -93,6 +93,7 @@ urlpatterns += [
     path('doctor-view-patient/<int:patient_id>', views.doctor_view_patient, name='doctor-view-patient'),
     path('doctor-prescribe-meds/<int:patient_id>', views.doctor_prescribe_medicine,name='doctor-prescribe-meds'),
     path('doctor-prescribe-tests/<int:patient_id>', views.doctor_prescribe_test,name='doctor-prescribe-test'),
+    path('doctor-notifications', views.doctor_notification, name='doctor-notifications'),
 ]
 
 # --- FOR DataEntry Related URLs (by Pranav) ---

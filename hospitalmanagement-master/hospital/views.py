@@ -369,15 +369,16 @@ def frontdesk_available_slots(doctor):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
             # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            print(slot)
-            available_slots.append(slot)
+        if (today.hour < i or (today.hour == i and today.minute == 0 and today.second == 0)):
+            if not appointments.filter(appointmentDateSlot=slot).exists():
+                available_slots.append(slot)
     for i in range(8,18):
         # Create a datetime object for each slot
         slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
         # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            available_slots.append(slot)
+        if (today.hour < i or (today.hour == i and today.minute == 0 and today.second == 0)):
+            if not appointments.filter(appointmentDateSlot=slot).exists():
+                available_slots.append(slot)
 
     return available_slots[0]
 
@@ -417,15 +418,17 @@ def frontdesk_available_test_slot(test_name):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
             # Check if the slot is already booked
-        if not tests.filter(test_slot=slot).exists():
-            available_slots.append(slot)
+        if (today.hour < i or (today.hour == i and today.minute == 0 and today.second == 0)):
+            if not tests.filter(test_slot=slot).exists():
+                available_slots.append(slot)
     for i in range(8, 18):
         # Create a datetime object for each slot
         slot = datetime.datetime(
             next_day.year, next_day.month, next_day.day, i, 0, 0)
         # Check if the slot is already booked
-        if not tests.filter(test_slot=slot).exists():
-            available_slots.append(slot)
+        if (today.hour < i or (today.hour == i and today.minute == 0 and today.second == 0)):
+            if not tests.filter(test_slot=slot).exists():
+                available_slots.append(slot)
 
     return available_slots[0]
 
@@ -518,6 +521,24 @@ def doctor_view_patient(request, patient_id):
         'test_results': models.Test_Results.objects.filter(patient=patient_id),
     }
     return render(request, 'hospital/doctor_view_patient.html', context)
+
+def doctor_notification(request):
+    doctor = models.DB_User.objects.get(user=request.user)
+    appointments = models.Appointment.objects.filter(doctor=doctor)
+
+    time_now = datetime.datetime.now().replace(microsecond=0)
+    app = []
+    for appointment in appointments:
+        if appointment.appointmentDateSlot.year == time_now.year and appointment.appointmentDateSlot.month == time_now.month and appointment.appointmentDateSlot.day == time_now.day and (appointment.appointmentDateSlot.hour > time_now.hour or (appointment.appointmentDateSlot.hour == time_now.hour and appointment.appointmentDateSlot.minute >= time_now.minute)):
+            app.append(appointment)
+
+    # patients = [appointment.patient for appointment in appointments]
+    context = {
+        'doctor': doctor,
+        'appointment': app,
+    }
+    print(app)
+    return render(request, 'hospital/doctor-notification.html', context)
 
 def aboutus_view(request):
     return render(request, 'hospital/aboutus.html')
