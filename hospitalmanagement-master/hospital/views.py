@@ -19,8 +19,8 @@ from django.conf import settings
 from django.db.models import Q
 import datetime
 
-START_HRS = 0
-END_HRS = 24
+START_HRS = 8
+END_HRS = 22
 BUFFER = 15
 
 # Create your views here.
