@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'hospitalmanagement.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': '20CS30029',
+        'PASSWORD': '20CS30029',
+        'HOST': '10.5.18.71',
+        'PORT': '3306',
+        'NAME': '20CS30029'
     }
 }
 
