@@ -1,0 +1,36 @@
+{% extends 'hospital/dashboard-doctor-base.html' %} {%load static%} {% block doctor-name %} {{doctor.user.first_name}} {{doctor.user.last_name}} 
+{% endblock doctor-name %} {% block content %}
+
+<style>
+    .result {
+        width: 100%;
+        height: 100%;
+        padding: 0.5rem;
+        border-radius: 1rem;
+    }
+  .container {
+    text-align: left;
+    overflow: hidden;
+    width: 80%;
+    margin: 0 auto;
+    display: table;
+    padding: 1rem 0 0 0;
+  }
+
+  .all {
+    background-color: #b9fbbe !important;
+    margin-top: 2rem;
+    border-radius: 1rem;
+  }
+  
+</style>
+<div class="all">
+    <div class="container">
+
+  <img
+  src="/media/Test_Results/{{url}}"
+  alt="John"
+  class="result"
+/>
+    </div>
+</div> {% endblock content %}
