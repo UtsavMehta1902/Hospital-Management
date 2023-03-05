@@ -58,12 +58,13 @@
 
     <div class="container">
         <div class="form-prescribe">
-            <form method="POST"> {% csrf_token %}
+            <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
         
             <div class="row mt-4">
                 <div class="form-group col-md-12">
                     <label>Test Results: </label>
                     <input type="text" class="form-control mt-2" name="test_results" placeholder="Results" required>
+                    <input type="file" accept="image/*" class="form-control mt-2" name="image_results" required>
                 </div>
             </div>
         
