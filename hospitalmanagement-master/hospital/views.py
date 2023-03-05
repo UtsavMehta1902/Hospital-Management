@@ -120,7 +120,6 @@ def doctorclick_view(request):
             return HttpResponseRedirect('/doctor-dashboard')
     return redirect('/doctorlogin')
 
-#for showing signup/login button for patient(by sumit)
 def frontdeskclick_view(request):
     if request.user.is_authenticated:
         if is_frontdesk(request.user):
