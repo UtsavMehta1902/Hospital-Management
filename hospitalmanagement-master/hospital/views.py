@@ -19,15 +19,34 @@ from django.conf import settings
 from django.db.models import Q
 import datetime
 
-START_HRS = 8
-END_HRS = 22
+START_HRS = 0
+END_HRS = 24
 BUFFER = 15
 
 # Create your views here.
 
 def home_view(request):
-    # if request.user.is_authenticated:
-    #     return HttpResponseRedirect('afterlogin')
+    # send email to doctor about the patient test results every sunday
+    if datetime.datetime.today().weekday() == 6:
+        reports = models.Test_Results.objects.exclude(test_results=None)
+        reports = reports.exclude(test_results='')
+        for report in reports:
+            doctor_email = report.doctor.user.email
+            open('log.txt', 'a').close()
+            with open('log.txt', 'r') as f:
+                if str(report.id) not in f.read():
+                    send_mail(
+                        'Test results',
+                        'Patient name: ' + report.patient.name + '\n' + 'Test results: ' + report.test_results,
+                        settings.EMAIL_HOST_USER,
+                        [doctor_email],
+                        fail_silently=True,
+                        auth_user=settings.EMAIL_HOST_USER,
+                        auth_password=settings.EMAIL_HOST_PASSWORD
+                    )
+                    # add the report id to the file
+                    with open('log.txt', 'a') as f:
+                        f.write(str(report.id) + '\n')
     return render(request,'hospital/index.html')
 
 def login_doctor(request):
