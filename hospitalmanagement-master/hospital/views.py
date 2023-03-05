@@ -136,15 +136,13 @@ def dataentry_dashboard(request):
 
 @login_required(login_url='/dataentrylogin')
 @user_passes_test(is_dataentry, login_url='/dataentrylogin')
-def add_test_results(request, id, name):
+def add_test_results(request, id=None):
     context = {
         'dataentry': models.DB_User.objects.get(user=request.user, type='DataEntry'),
     }
     if request.method == 'POST':
-        Patient = models.Patient.objects.get(patientId=id)
-        testname = name
-        if models.Test_Results.objects.filter(patient=Patient, test_name=testname).exists():
-            test = models.Test_Results.objects.filter(patient=Patient, test_name=testname).first()
+        test = models.Test_Results.objects.get(id=id)
+        if test is not None:
             test_results = request.POST.get('test_results')
             test.test_results = test_results
             image_results = request.FILES.get('image_results')
@@ -465,10 +463,10 @@ def frontdesk_pending_tests(id):
 @login_required(login_url='/doctorlogin')
 @user_passes_test(is_doctor, login_url='/doctorlogin')
 def doctor_dashboard(request):
-    # doctor12 = models.DB_User.objects.get(id=6)
     doctor = models.DB_User.objects.get(user=request.user)
     appointments = models.Appointment.objects.filter(doctor=doctor)
     patients = [appointment.patient for appointment in appointments]
+    patients = list(set(patients))
     context = {
         'doctor': doctor,
         'patients': patients,
@@ -551,12 +549,11 @@ def doctor_view_patient(request, patient_id):
         'prescriptions': models.Prescription.objects.filter(patient=patient_id),
         'test_results': models.Test_Results.objects.filter(patient=patient_id),
     }
-    # print("image", type(context['test_results'][0].image_results))
-    for res in context['test_results']:
-        if res.image_results != '':
-            print(res.image_results.url)
+    
     return render(request, 'hospital/doctor_view_patient.html', context)
 
+@login_required(login_url='/doctorlogin')
+@user_passes_test(is_doctor, login_url='/doctorlogin')
 def doctor_view_image(request, url):
     context = {
         'doctor': models.DB_User.objects.get(user=request.user),

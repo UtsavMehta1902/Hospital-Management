@@ -46,7 +46,7 @@ urlpatterns += [
 # --- FOR DataEntry Related URLs (by Pranav) ---
 urlpatterns += [
     path('dataentry-dashboard', views.dataentry_dashboard,name='dataentry-dashboard'),
-    path('dataentry/<int:id>/<str:name>', views.add_test_results, name='add_test_results')
+    path('dataentry/<int:id>', views.add_test_results, name='add_test_results')
 ]
 
 
