@@ -331,7 +331,7 @@ def frontdesk_schedule_appointment(request):
     
     doctors = models.DB_User.objects.filter(type='Doctor')
     context = {
-        'frontdesk': models.DB_User.objects.get(id=3), # after login workds replace frontuser12 with request.user
+        'frontdesk': models.DB_User.objects.get(user=request.user, type='FrontDesk'), # after login workds replace frontuser12 with request.user
         'doctors': doctors,
         'patients': new_patient,
     }
@@ -369,15 +369,16 @@ def frontdesk_available_slots(doctor):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
             # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            print(slot)
-            available_slots.append(slot)
+        if (today.hour < i or (today.hour == i and today.minute == 0 and today.second == 0)):
+            if not appointments.filter(appointmentDateSlot=slot).exists():
+                available_slots.append(slot)
     for i in range(8,18):
         # Create a datetime object for each slot
         slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
         # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            available_slots.append(slot)
+        if (today.hour < i or (today.hour == i and today.minute == 0 and today.second == 0)):
+            if not appointments.filter(appointmentDateSlot=slot).exists():
+                available_slots.append(slot)
 
     return available_slots[0]
 
@@ -450,12 +451,11 @@ def frontdesk_pending_tests(id):
 @user_passes_test(is_doctor, login_url='/doctorlogin')
 def doctor_dashboard(request):
     # doctor12 = models.DB_User.objects.get(id=6)
-    doctor = models.DB_User.objects.get(user=request.user)
-    appointments = models.Appointment.objects.filter(doctor=doctor)
-    patients = [appointment.patient for appointment in appointments]
+    Doctor = models.DB_User.objects.get(user=request.user)
+    appointments = models.Appointment.objects.filter(doctor=Doctor)
     context = {
-        'doctor': doctor,
-        'patients': patients,
+        'doctor': Doctor,
+        'appointments': appointments,
     }
     return render(request, 'hospital/doctor-dashboard.html', context)
 

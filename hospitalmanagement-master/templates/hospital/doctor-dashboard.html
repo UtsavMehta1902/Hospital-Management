@@ -180,25 +180,25 @@
       </tr>
     </thead>
     <tbody>
-      {% for patient in patients %}
+      {% for appointment in appointments %}
       <tr>
-        <td>{{patient.patientId}}.</td>
-        <td>{{patient.name}}</td>
+        <td>{{appointment.id}}.</td>
+        <td>{{appointment.patient.name}}</td>
         <td>
           <a
-            href="/doctor-view-patient/{{patient.patientId}}"
+            href="/doctor-view-patient/{{appointment.patient.patientId}}"
             class="btn"
             >Details&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
         </td>
         <td>
           <a
-            href="/doctor-prescribe-meds/{{patient.patientId}}"
+            href="/doctor-prescribe-meds/{{appointment.patient.patientId}}"
             class="btn btn2"
             >Medicines&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           > /
           <a
-            href="/doctor-prescribe-tests/{{patient.patientId}}"
+            href="/doctor-prescribe-tests/{{appointment.patient.patientId}}"
             class="btn btn3"
             >Tests&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a
           >
