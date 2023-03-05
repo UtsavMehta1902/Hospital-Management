@@ -22,10 +22,11 @@
   <body>
     <div class="option">
       <div class="logo">
-        <img
-          src="{% static "images/LOGO.jpeg" %}" alt="John" style="padding: 0.5rem; border-radius: 1rem;"
-          alt="logo"
-        />
+        <a href="/">
+          <img
+            src="{% static "images/LOGO.jpeg" %}" alt="John" style="padding: 0.5rem; border-radius: 1rem;"
+            alt="logo"
+          /></a>
       </div>
       <p class="tagline">
         Aarogyam Dhan Sampada
@@ -39,6 +40,8 @@
         </a>
         <a href="/frontdesk-add-patient">
           <i class="fa-solid fa-person-circle-plus"></i>
+          <br />&nbsp;
+          <br />
             Add Patient
         </a>
         <!-- schedule appoitment -->
@@ -64,9 +67,7 @@
 
     <div class="dashboard-heading">
       <div class="panel">
-        <i class="fa-solid fa-bell">
-          <bold>1</bold>
-        </i>
+        <i class="fa-solid fa-heart-circle-bolt"></i>
         <div class="logout" ng-controller="coin">
           <button class="btc-price"><a href="/logout">Logout</a></button>
         </div>

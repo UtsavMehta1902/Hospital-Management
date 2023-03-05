@@ -475,6 +475,24 @@ def doctor_dashboard(request):
     }
     return render(request, 'hospital/doctor-dashboard.html', context)
 
+@login_required(login_url='/doctorlogin')
+@user_passes_test(is_doctor, login_url='/doctorlogin')
+def doctor_notification(request):
+    doctor = models.DB_User.objects.get(user=request.user)
+    appointments = models.Appointment.objects.filter(doctor=doctor)
+
+    time_now = datetime.datetime.now().replace(microsecond=0)
+    app = []
+    for appointment in appointments:
+        if appointment.appointmentDateSlot.year == time_now.year and appointment.appointmentDateSlot.month == time_now.month and appointment.appointmentDateSlot.day == time_now.day and (appointment.appointmentDateSlot.hour > time_now.hour or (appointment.appointmentDateSlot.hour == time_now.hour and appointment.appointmentDateSlot.minute >= time_now.minute)):
+            app.append(appointment)
+
+    context = {
+        'doctor': doctor,
+        'appointments': app,
+    }
+    return render(request, 'hospital/doctor-notification.html', context)
+
 # doctor dashboard functionality to prescribe medicine and add it to model Prescription 
 @login_required(login_url='/doctorlogin')
 @user_passes_test(is_doctor, login_url='/doctorlogin')
