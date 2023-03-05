@@ -83,6 +83,7 @@ urlpatterns += [
     path('frontdesk-add-patient', views.frontdesk_add_patient, name='frontdesk-add-patient'),
     path('frontdesk-schedule-appointment', views.frontdesk_schedule_appointment, name='frontdesk-schedule-appointment'),
     path('frontdesk-schedule-test', views.frontdesk_schedule_tests, name='frontdesk-schedule-test'),
+    path('frontdesk-schedule-test/<int:test_id>', views.frontdesk_schedule_tests, name='frontdesk-schedule-test'),
     path('frontdesk-admit-patient/<int:patient_id>', views.frontdesk_admit_patient, name='frontdesk-admit-patient'),
     path('frontdesk-discharge-patient/<int:patient_id>', views.frontdesk_discharge_patient, name='frontdesk-discharge-patient'),
 ]

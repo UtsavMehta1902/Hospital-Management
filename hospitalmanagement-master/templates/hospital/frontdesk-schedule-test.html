@@ -238,65 +238,30 @@
   </style>
   <div class="all">
     <div class="container mt-4">
-      <h1 class="text-center page-title"><strong>Patients</strong></h1>
+      <h1 class="text-center page-title"><strong>Unsheduled Tests</strong></h1>
       <table class="table table-hover" id="example">
         <thead>
           <tr>
-            <th><h1>Id</h1></th>
-            <th><h1>Name</h1></th>
-            <th><h1>Mobile</h1></th>
-            <th><h1>Address</h1></th>
+            <th><h1>Sr No.</h1></th>
+            <th><h1>Patient Name</h1></th>
+            <th><h1>Test Name</h1></th>
+            <th><h1>Doctor Name</h1></th>
+            <th><h1>Schedule Test</h1></th>
           </tr>
         </thead>
         <tbody>
-          {% for patient in patients %}
+          {% for test in tests %}
           <tr>
-            <td>{{patient.patientId}}.</td>
-            <td>{{patient.name}}</td>
-            <td>{{patient.mobile}}</td>
-            <td>{{patient.address}}</td>
+            <td>{{forloop.counter}}.</td>
+            <td>{{test.patient.name}}</td>
+            <td>{{test.test_name}}</td>
+            <td>{{test.doctor.user.first_name}} {{test.doctor.user.last_name}}</td>
+            <td><a href="/frontdesk-schedule-test/{{test.id}}" class="btn btn-primary btn-sm">Schedule &nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a></td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
-    <div class="container form-container">
-      <div class="form-prescribe">
-        <form method="POST">
-          {% csrf_token %}
-
-          <div class="row mt-4">
-            <div class="form-group col-md-12">
-              <label>Patient Id: </label>
-              <input
-                type="text"
-                class="form-control mt-2"
-                name="patient"
-                placeholder="Patient Id"
-                required
-              />
-            </div>
-          </div>
-
-            <div class="row mt-4">
-                <div class="form-group col-md-12">
-                  <label>Test Name: </label>
-                  <input
-                    type="text"
-                    class="form-control mt-2"
-                    name="test_name"
-                    placeholder="Test Name"
-                    required
-                  />
-                </div>
-          </div>
-          <button
-            type="submit"
-            class="btn btn-outline-primary mt-4 btn-register"
-          >
-            Schedule
-          </button>
 
           <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
           <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
@@ -330,8 +295,6 @@
             {% endif %}
           </script>
           {% endblock %} {% endblock content %}
-        </form>
-      </div>
-    </div>
+
   </div>
 </div>

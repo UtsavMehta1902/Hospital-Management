@@ -19,6 +19,10 @@ from django.conf import settings
 from django.db.models import Q
 import datetime
 
+START_HRS = 8
+END_HRS = 22
+BUFFER = 15
+
 # Create your views here.
 
 def home_view(request):
@@ -126,7 +130,7 @@ def dataentry_dashboard(request):
     }
     for test in models.Test_Results.objects.all():
         if test.test_results == None or test.test_results== '':
-            if test.test_slot is not None:
+            if test.test_slot is not None and test.test_slot <= datetime.datetime.now():
                 context['tests'].append(test)
     return render(request, 'hospital/dataentry-dashboard.html', context)
 
@@ -140,7 +144,6 @@ def add_test_results(request, id, name):
         Patient = models.Patient.objects.get(patientId=id)
         testname = name
         if models.Test_Results.objects.filter(patient=Patient, test_name=testname).exists():
-            test = models.Test_Results.objects.get(patient=Patient, test_name=testname)
             test = models.Test_Results.objects.get(patient=Patient, test_name=testname)
             test_results = request.POST.get('test_results')
             test.test_results = test_results
@@ -331,18 +334,24 @@ def frontdesk_schedule_appointment(request):
     
     doctors = models.DB_User.objects.filter(type='Doctor')
     context = {
-        'frontdesk': models.DB_User.objects.get(id=3), # after login workds replace frontuser12 with request.user
+        'frontdesk': models.DB_User.objects.get(user=request.user), # after login workds replace frontuser12 with request.user
         'doctors': doctors,
         'patients': new_patient,
     }
 
     if request.method == 'POST':
         patientId = request.POST.get('patient')
+        # patient id is invalid, then return error
+        if not models.Patient.objects.filter(patientId=patientId).exists():
+            messages.error(request, 'Patient ID is invalid')
+            return redirect('/frontdesk-dashboard')
         patient = models.Patient.objects.get(patientId=patientId)
         assignedDoctor = request.POST.get('doctor') 
+        if(int(assignedDoctor) > len(doctors)):
+            messages.error(request, 'Doctor ID is invalid')
+            return redirect('/frontdesk-dashboard')
         doctor = doctors[int(assignedDoctor)-1]
         appointment_date_slot = frontdesk_available_slots(doctor)
-        print(appointment_date_slot)
         description = request.POST.get('description')
         appointment = models.Appointment.objects.create(
             patient=patient,
@@ -362,17 +371,20 @@ def frontdesk_available_slots(doctor):
     # Get today Date from system
     # today = datetime.datetime.today().replace(microsecond=0)
     today = datetime.datetime.now().replace(microsecond=0)
+    if(today.minute > BUFFER):
+        hour = today.hour + 1
+    else: 
+        hour = today.hour
     next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
     available_slots = []
 
-    for i in range(8,18):
+    for i in range(hour,END_HRS):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
             # Check if the slot is already booked
         if not appointments.filter(appointmentDateSlot=slot).exists():
-            print(slot)
             available_slots.append(slot)
-    for i in range(8,18):
+    for i in range(START_HRS,END_HRS):
         # Create a datetime object for each slot
         slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
         # Check if the slot is already booked
@@ -383,22 +395,21 @@ def frontdesk_available_slots(doctor):
 
 @login_required(login_url='/frontdesklogin')
 @user_passes_test(is_frontdesk, login_url='/frontdesklogin')
-def frontdesk_schedule_tests(request):
-    P = models.Patient.objects.all()
+def frontdesk_schedule_tests(request, test_id = None):
+    tests = models.Test_Results.objects.filter(test_slot = None)
     context = {
-        'frontdesk': models.DB_User.objects.get(id=3), 
-        'patients': P,
+        'frontdesk': models.DB_User.objects.get(user=request.user), 
+        'tests': tests,
     }
-    if request.method == 'POST':
-        patientId = request.POST.get('patient')
-        patient = models.Patient.objects.get(patientId=patientId)
-        test_name = request.POST.get('test_name')
-        test_slot = frontdesk_available_test_slot(test_name)
-        test = models.Test_Results.objects.create(
-            patient=patient,
-            test_name=test_name,
-            test_slot=test_slot,
-        )
+    if test_id is not None:
+        test = tests.get(id=test_id)
+        test_slot = frontdesk_available_test_slot(test.test_name)
+
+        if(test_slot is None):
+            messages.error(request, 'No Available Slot within upcoming two days')
+            return redirect('/frontdesk-dashboard')
+
+        test.test_slot = test_slot
         test.save()
         messages.success(request, 'Test scheduled successfully')
         return redirect('/frontdesk-dashboard')
@@ -409,24 +420,29 @@ def frontdesk_available_test_slot(test_name):
     tests = models.Test_Results.objects.filter(test_name=test_name)
     # Get today Date from system
     today = datetime.datetime.now().replace(microsecond=0)
+    if(today.minute > BUFFER):
+        hour = today.hour + 1
+    else: 
+        hour = today.hour
     next_day = datetime.datetime.today().replace(
         microsecond=0) + datetime.timedelta(days=1)
     available_slots = []
 
-    for i in range(8, 18):
+    for i in range(hour, END_HRS):
         # Create a datetime object for each slot
         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
             # Check if the slot is already booked
         if not tests.filter(test_slot=slot).exists():
             available_slots.append(slot)
-    for i in range(8, 18):
+    for i in range(START_HRS, END_HRS):
         # Create a datetime object for each slot
         slot = datetime.datetime(
             next_day.year, next_day.month, next_day.day, i, 0, 0)
         # Check if the slot is already booked
         if not tests.filter(test_slot=slot).exists():
             available_slots.append(slot)
-
+    if available_slots is None:
+        return None
     return available_slots[0]
 
 def frontdesk_pending_tests(id):
