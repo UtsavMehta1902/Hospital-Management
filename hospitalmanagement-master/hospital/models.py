@@ -64,6 +64,8 @@ class Patient(models.Model):
     @property
     def get_id(self):
         return self.patientId
+    def __str__(self):
+        return self.name + " (" + str(self.patientId) + ")"
 
 
 class Appointment(models.Model):
