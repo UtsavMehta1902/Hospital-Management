@@ -20,7 +20,7 @@ body {
 .tagline {
   color: #d4ff00;
   padding: 1rem 1rem;
-  margin-top: -5px;
+  text-align: center;
 }
 
 .info {
