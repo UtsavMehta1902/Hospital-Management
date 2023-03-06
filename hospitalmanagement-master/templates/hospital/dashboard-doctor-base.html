@@ -22,13 +22,15 @@
   <body>
     <div class="option">
       <div class="logo">
+        <a href="/">
         <img
           src="{% static "images/LOGO.jpeg" %}" alt="John" style="padding: 0.5rem; border-radius: 1rem;"
           alt="logo"
         />
+      </a>
       </div>
       <p class="tagline">
-        We hope you visit us again.
+        Aarogyam Dhan Sampada
       </p>
       <div class="name"><button>{% block doctor-name %}{% endblock doctor-name %}</button></div>
       <div class="clear"></div>
@@ -44,15 +46,17 @@
         </a> -->
       </ul>
       <div class="info">
-        <p class="tagline"><i class="fas fa-phone"></i>&nbsp;&nbsp; +91 9328209239</p>
+        <p class="phone"><i class="fas fa-phone"></i>&nbsp;&nbsp; +91 9328209239</p>
       </div>
     </div>
 
     <div class="dashboard-heading">
       <div class="panel">
-        <i class="fa-solid fa-bell">
-          <bold>1</bold>
-        </i>
+        <a href="/doctor-notifications">
+          <i class="fa-solid fa-bell">
+            <bold>&nbsp;</bold>
+          </i>
+        </a>
         <div class="logout" ng-controller="coin">
           <button class="btc-price"><a href="/logout">Logout</a></button>
         </div>

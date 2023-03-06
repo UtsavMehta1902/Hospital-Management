@@ -209,6 +209,7 @@
           <th><h1>Index</h1></th>
           <th><h1>Test Name</h1></th>
           <th><h1>Test Results</h1></th>
+          <th><h1>Test Image</h1></th>
           <th><h1>Test Slot</h1></th>
         </tr>
       </thead>
@@ -218,6 +219,22 @@
           <td>{{forloop.counter}}.</td>
           <td>{{result.test_name}}</td>
           <td>{{result.test_results}}</td>
+          <td>
+            {% if result.image_results == None %}
+            -
+            {% else %}
+              {% if result.image_results == '' %}
+              -
+              {% else %}
+                <a href="/view-image{{result.image_results.url}}">
+                  <img
+                  src="{{result.image_results.url}}" alt="John" style="padding: 0.5rem; border-radius: 1rem; width: 7rem; height: 7rem;"
+                  alt="logo"
+                />
+                </a>
+              {% endif %}
+            {% endif %}
+          </td>
           <td>{{result.test_slot}}</td>
         </tr>
         {% endfor %}
