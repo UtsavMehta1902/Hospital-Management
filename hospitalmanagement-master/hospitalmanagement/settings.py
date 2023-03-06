@@ -77,14 +77,25 @@ WSGI_APPLICATION = 'hospitalmanagement.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'USER': '20CS30029',
+#         'PASSWORD': '20CS30029',
+#         'HOST': '10.5.18.71',
+#         'PORT': '3306',
+#         'NAME': '20CS30029'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'USER': '20CS30029',
-        'PASSWORD': '20CS30029',
-        'HOST': '10.5.18.71',
+        'USER': 'pranav',
+        'PASSWORD': '123@passW',
+        'HOST': 'localhost',
         'PORT': '3306',
-        'NAME': '20CS30029'
+        'NAME': 'Apollo'
     }
 }
 

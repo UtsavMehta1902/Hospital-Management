@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 
 
 class DB_User(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, choices=[('Doctor', 'Doctor'), ('FrontDesk', 'FrontDesk'), ('DataEntry', 'DataEntry')])
     address = models.CharField(max_length=100)
@@ -69,12 +70,14 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
+    id = models.AutoField(primary_key=True)
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
     doctor = models.ForeignKey('DB_User', on_delete=models.CASCADE)
     appointmentDateSlot = models.DateTimeField(null=True, default=None)
     description = models.TextField(max_length=500, blank=True, default='')
 
 class Prescription(models.Model):
+    id = models.AutoField(primary_key=True)
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
     doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL, null=True)
     medicine_name = models.CharField(max_length=50)
@@ -87,6 +90,7 @@ class Room(models.Model):
 
 
 class Test_Results(models.Model):
+    id = models.AutoField(primary_key=True)
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE)
     doctor = models.ForeignKey('DB_User', on_delete=models.SET_NULL, null=True)
     test_name = models.CharField(max_length=100)

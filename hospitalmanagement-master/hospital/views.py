@@ -20,7 +20,7 @@ from django.db.models import Q
 import datetime
 
 START_HRS = 8
-END_HRS = 22
+END_HRS = 21
 BUFFER = 15
 
 # Create your views here.
@@ -590,15 +590,15 @@ def contactus_view(request):
             email = sub.cleaned_data['Email']
             name = sub.cleaned_data['Name']
             message = sub.cleaned_data['Message']
-            # send_mail(
-            #             str(name) + ', Welcome to Apollo Hospital',
-            #             'Thank you for contacting us. We will get back to you soon.',
-            #             settings.EMAIL_HOST_USER,
-            #             [email],
-            #             fail_silently=False,
-            #             auth_user=settings.EMAIL_HOST_USER,
-            #             auth_password=settings.EMAIL_HOST_PASSWORD
-            #         )
+            send_mail(
+                        str(name) + ', Welcome to Apollo Hospital',
+                        'Thank you for contacting us. We will get back to you soon.',
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                        auth_user=settings.EMAIL_HOST_USER,
+                        auth_password=settings.EMAIL_HOST_PASSWORD
+                    )
             messages.success(request, 'Your message has been sent successfully, you will be contacted soon.')
             return render(request, 'hospital/contactus.html')
         else:
