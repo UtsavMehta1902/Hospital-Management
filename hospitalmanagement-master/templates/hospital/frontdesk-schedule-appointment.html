@@ -1,4 +1,4 @@
-{% extends 'hospital/frontdesk-dashboard-base.html' %} {% load static %} 
+{% extends 'hospital/frontdesk-dashboard-base.html' %} {% load static %}
 {% block frontdesk-name %} {{frontdesk.user.first_name}}
 {{frontdesk.user.last_name}} {% endblock frontdesk-name %} {% block content %}
 
@@ -87,7 +87,7 @@
 
 <div class="all">
   <style>
-    #example_filter > label {
+    #example_filter>label {
       color: #00425a;
       font-size: larger;
     }
@@ -104,7 +104,7 @@
       color: #00425a !important;
     }
 
-    #example2_filter > label {
+    #example2_filter>label {
       color: #00425a;
       font-size: larger;
     }
@@ -225,9 +225,11 @@
     .btn {
       max-width: 5rem;
     }
+
     .btn2 {
       margin-right: 3rem;
     }
+
     .btn3 {
       margin-left: 3rem;
     }
@@ -238,7 +240,7 @@
     }
 
     .form-container {
-        margin-top: 4rem !important;
+      margin-top: 4rem !important;
     }
 
     .page-title {
@@ -247,6 +249,7 @@
     }
 
     @media (max-width: 800px) {
+
       .container td:nth-child(4),
       .container th:nth-child(4) {
         display: none;
@@ -259,10 +262,18 @@
       <table class="table table-hover" id="example">
         <thead>
           <tr>
-            <th><h1>Id</h1></th>
-            <th><h1>Name</h1></th>
-            <th><h1>Mobile</h1></th>
-            <th><h1>Address</h1></th>
+            <th>
+              <h1>Id</h1>
+            </th>
+            <th>
+              <h1>Name</h1>
+            </th>
+            <th>
+              <h1>Mobile</h1>
+            </th>
+            <th>
+              <h1>Address</h1>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -283,10 +294,18 @@
       <table class="table table-hover" id="example2">
         <thead>
           <tr>
-            <th><h1>Doctor Id</h1></th>
-            <th><h1>Name</h1></th>
-            <th><h1>Mobile</h1></th>
-            <th><h1>Address</h1></th>
+            <th>
+              <h1>Doctor Id</h1>
+            </th>
+            <th>
+              <h1>Name</h1>
+            </th>
+            <th>
+              <h1>Mobile</h1>
+            </th>
+            <th>
+              <h1>Address</h1>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -309,44 +328,37 @@
           <div class="row mt-4">
             <div class="form-group col-md-12">
               <label>Patient Id: </label>
-              <input
-                type="text"
-                class="form-control mt-2"
-                name="patient"
-                placeholder="Patient Id"
-                required
-              />
+              <input type="text" class="form-control mt-2" name="patient" placeholder="Patient Id" required />
             </div>
           </div>
 
           <div class="row mt-4">
             <div class="form-group col-md-12">
               <label>Doctor Id: </label>
-              <input
-                type="text"
-                class="form-control mt-2"
-                name="doctor"
-                placeholder="Doctor Id"
-                required
-              />
+              <input type="text" class="form-control mt-2" name="doctor" placeholder="Doctor Id" required />
             </div>
 
             <div class="row mt-4">
-                <div class="form-group col-md-12">
-                  <label>Description: </label>
-                  <input
-                    type="text"
-                    class="form-control mt-2"
-                    name="description"
-                    placeholder="Description"
-                    required
-                  />
-                </div>
+              <div class="form-group col-md-12">
+                <label>Description: </label>
+                <input type="text" class="form-control mt-2" name="description" placeholder="Description" required />
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="form-group col-md-12">
+                <label>Date: </label>
+                <input type="date" class="form-control mt-2" name="date" placeholder="" required />
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="form-group col-md-12">
+                <label>Time: </label>
+                <input type="time" class="form-control mt-2" name="time" placeholder="" required />
+              </div>
+            </div>
           </div>
-          <button
-            type="submit"
-            class="btn btn-outline-primary mt-4 btn-register"
-          >
+          <button type="submit" class="btn btn-outline-primary mt-4 btn-register">
             Schedule
           </button>
 
@@ -370,15 +382,15 @@
             });
 
             $(document).ready(function () {
-            $('.dataTables_filter input[type="search"]').css(
-              {'width':'30vw','display':'inline-block', 'color':'black', 'margin': '1rem'}
-            );
+              $('.dataTables_filter input[type="search"]').css(
+                { 'width': '30vw', 'display': 'inline-block', 'color': 'black', 'margin': '1rem' }
+              );
             });
 
             {% if messages %}
-                {% for message in messages %}
-                alert("{{ message }}");
-                {% endfor %}
+            {% for message in messages %}
+            alert("{{ message }}");
+            {% endfor %}
             {% endif %}
           </script>
           {% endblock %} {% endblock content %}

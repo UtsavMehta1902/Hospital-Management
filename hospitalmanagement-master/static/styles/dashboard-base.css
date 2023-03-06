@@ -46,6 +46,7 @@ body {
   float: left;
   background-color: #1F8A70;
   border-radius: 1rem;
+  /* overflow-x: hidden !important; */
 }
 
 button {
