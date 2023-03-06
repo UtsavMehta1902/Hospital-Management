@@ -367,7 +367,12 @@ def frontdesk_schedule_appointment(request):
             messages.error(request, 'Doctor ID is invalid')
             return redirect('/frontdesk-dashboard')
         doctor = doctors[int(assignedDoctor)-1]
-        appointment_date_slot = frontdesk_available_slots(doctor)
+        date_time = request.POST.get('date_time')
+        appointment_date_slot = frontdesk_available_slots(doctor,date_time)
+        if appointment_date_slot is None:
+            messages.error(request, 'No slot available')
+            return redirect('/frontdesk-dashboard')
+        
         description = request.POST.get('description')
         appointment = models.Appointment.objects.create(
             patient=patient,
@@ -381,37 +386,48 @@ def frontdesk_schedule_appointment(request):
         return redirect('/frontdesk-dashboard')
     return render(request, 'hospital/frontdesk-schedule-appointment.html', context)
 
-def frontdesk_available_slots(doctor):
+def frontdesk_available_slots(doctor,date_time):
     # Get all appointments of the doctor
     appointments = models.Appointment.objects.filter(doctor=doctor)
-    # Get today Date from system
-    # today = datetime.datetime.today().replace(microsecond=0)
-    today = datetime.datetime.now().replace(microsecond=0)
-    if(today.minute > BUFFER):
-        hour = today.hour + 1
-    else: 
-        hour = today.hour
-    next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
-    available_slots = []
+    date_time.replace(microsecond=0)
+    date_time.replace(second=0)
+    date_time.replace(minute=0)
+    if not appointments.filter(appointmentDateSlot=date_time).exists():
+        return date_time
 
-    for i in range(hour,END_HRS):
-        # Create a datetime object for each slot
-        slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
-            # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            available_slots.append(slot)
-    for i in range(START_HRS,END_HRS):
-        # Create a datetime object for each slot
-        slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
-        # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            available_slots.append(slot)
+    return None
+# def frontdesk_available_slots(doctor):
+#     # Get all appointments of the doctor
+#     appointments = models.Appointment.objects.filter(doctor=doctor)
+#     # Get today Date from system
+#     # today = datetime.datetime.today().replace(microsecond=0)
+#     today = datetime.datetime.now().replace(microsecond=0)
+#     if(today.minute > BUFFER):
+#         hour = today.hour + 1
+#     else: 
+#         hour = today.hour
+#     next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
+#     available_slots = []
 
-    return available_slots[0]
+#     for i in range(hour,END_HRS):
+#         # Create a datetime object for each slot
+#         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
+#             # Check if the slot is already booked
+#         if not appointments.filter(appointmentDateSlot=slot).exists():
+#             available_slots.append(slot)
+#     for i in range(START_HRS,END_HRS):
+#         # Create a datetime object for each slot
+#         slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
+#         # Check if the slot is already booked
+#         if not appointments.filter(appointmentDateSlot=slot).exists():
+#             available_slots.append(slot)
+
+#     return available_slots[0]
+
 
 @login_required(login_url='/frontdesklogin')
 @user_passes_test(is_frontdesk, login_url='/frontdesklogin')
-def frontdesk_schedule_tests(request, test_id = None):
+def frontdesk_schedule_tests(request, test_id = None, test_slot = None):
     tests = models.Test_Results.objects.filter(test_slot = None)
     context = {
         'frontdesk': models.DB_User.objects.get(user=request.user), 
@@ -419,7 +435,10 @@ def frontdesk_schedule_tests(request, test_id = None):
     }
     if test_id is not None:
         test = tests.get(id=test_id)
-        test_slot = frontdesk_available_test_slot(test.test_name)
+        test_slot = frontdesk_available_test_slot(test.test_name,test_slot)
+        if test_slot is None:
+            messages.error(request, 'No Available Slot')
+            return redirect('/frontdesk-dashboard')
 
         if(test_slot is None):
             messages.error(request, 'No Available Slot within upcoming two days')
@@ -431,35 +450,45 @@ def frontdesk_schedule_tests(request, test_id = None):
         return redirect('/frontdesk-dashboard')
 
     return render(request, 'hospital/frontdesk-schedule-test.html', context)
-
-def frontdesk_available_test_slot(test_name):
+def frontdesk_available_test_slot(test_name,test_slot):
     tests = models.Test_Results.objects.filter(test_name=test_name)
     # Get today Date from system
-    today = datetime.datetime.now().replace(microsecond=0)
-    if(today.minute > BUFFER):
-        hour = today.hour + 1
-    else: 
-        hour = today.hour
-    next_day = datetime.datetime.today().replace(
-        microsecond=0) + datetime.timedelta(days=1)
-    available_slots = []
+    test_slot.replace(microsecond=0)
+    test_slot.replace(second=0)
+    test_slot.replace(minute=0)
+    if not tests.filter(test_slot=test_slot).exists():
+        return test_slot
+    
+    return None
+# def frontdesk_available_test_slot(test_name):
+#     tests = models.Test_Results.objects.filter(test_name=test_name)
+#     # Get today Date from system
+#     today = datetime.datetime.now().replace(microsecond=0)
+#     if(today.minute > BUFFER):
+#         hour = today.hour + 1
+#     else: 
+#         hour = today.hour
+#     next_day = datetime.datetime.today().replace(
+#         microsecond=0) + datetime.timedelta(days=1)
+#     available_slots = []
 
-    for i in range(hour, END_HRS):
-        # Create a datetime object for each slot
-        slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
-            # Check if the slot is already booked
-        if not tests.filter(test_slot=slot).exists():
-            available_slots.append(slot)
-    for i in range(START_HRS, END_HRS):
-        # Create a datetime object for each slot
-        slot = datetime.datetime(
-            next_day.year, next_day.month, next_day.day, i, 0, 0)
-        # Check if the slot is already booked
-        if not tests.filter(test_slot=slot).exists():
-            available_slots.append(slot)
-    if available_slots is None:
-        return None
-    return available_slots[0]
+#     for i in range(hour, END_HRS):
+#         # Create a datetime object for each slot
+#         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
+#             # Check if the slot is already booked
+#         if not tests.filter(test_slot=slot).exists():
+#             available_slots.append(slot)
+#     for i in range(START_HRS, END_HRS):
+#         # Create a datetime object for each slot
+#         slot = datetime.datetime(
+#             next_day.year, next_day.month, next_day.day, i, 0, 0)
+#         # Check if the slot is already booked
+#         if not tests.filter(test_slot=slot).exists():
+#             available_slots.append(slot)
+#     if available_slots is None:
+#         return None
+#     return available_slots[0]
+
 
 def frontdesk_pending_tests(id):
 
