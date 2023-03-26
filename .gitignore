@@ -4,3 +4,6 @@ hospitalmanagement-master/hospital/migrations
 hospitalmanagement-master/hospital/__pycache__
 hospitalmanagement-master/hospitalmanagement/__pycache__
 hospitalmanagement-master/db.sqlite3
+DB_Backup/
+skups.zip
+
