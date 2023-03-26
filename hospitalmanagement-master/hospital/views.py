@@ -20,7 +20,7 @@ from django.db.models import Q
 import datetime
 
 START_HRS = 8
-END_HRS = 22
+END_HRS = 21
 BUFFER = 15
 
 # Create your views here.
@@ -367,7 +367,12 @@ def frontdesk_schedule_appointment(request):
             messages.error(request, 'Doctor ID is invalid')
             return redirect('/frontdesk-dashboard')
         doctor = doctors[int(assignedDoctor)-1]
-        appointment_date_slot = frontdesk_available_slots(doctor)
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        appointment_date_slot = frontdesk_available_slots(doctor, date, time)
+        if appointment_date_slot is None:
+            messages.error(request, "Already scheduled another appointment.")
+            return redirect('/frontdesk-schedule-appointment')
         description = request.POST.get('description')
         appointment = models.Appointment.objects.create(
             patient=patient,
@@ -381,33 +386,48 @@ def frontdesk_schedule_appointment(request):
         return redirect('/frontdesk-dashboard')
     return render(request, 'hospital/frontdesk-schedule-appointment.html', context)
 
-def frontdesk_available_slots(doctor):
+# def frontdesk_available_slots(doctor):
+#     # Get all appointments of the doctor
+#     appointments = models.Appointment.objects.filter(doctor=doctor)
+#     # Get today Date from system
+#     # today = datetime.datetime.today().replace(microsecond=0)
+#     today = datetime.datetime.now().replace(microsecond=0)
+#     if(today.minute > BUFFER):
+#         hour = today.hour + 1
+#     else: 
+#         hour = today.hour
+#     next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
+#     available_slots = []
+
+#     for i in range(hour,END_HRS):
+#         # Create a datetime object for each slot
+#         slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
+#             # Check if the slot is already booked
+#         if not appointments.filter(appointmentDateSlot=slot).exists():
+#             available_slots.append(slot)
+#     for i in range(START_HRS,END_HRS):
+#         # Create a datetime object for each slot
+#         slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
+#         # Check if the slot is already booked
+#         if not appointments.filter(appointmentDateSlot=slot).exists():
+#             available_slots.append(slot)
+
+#     return available_slots[0]
+
+def frontdesk_available_slots(doctor,date, time):
     # Get all appointments of the doctor
     appointments = models.Appointment.objects.filter(doctor=doctor)
-    # Get today Date from system
-    # today = datetime.datetime.today().replace(microsecond=0)
-    today = datetime.datetime.now().replace(microsecond=0)
-    if(today.minute > BUFFER):
-        hour = today.hour + 1
-    else: 
-        hour = today.hour
-    next_day =  datetime.datetime.today().replace(microsecond=0) + datetime.timedelta(days=1)
-    available_slots = []
+    # date_time = datetime.datetime(date.year,date.month. date.date, time.hour, 0, 0)
+    date = date.split('-')
+    time = time.split(':')
+    date_time = datetime.datetime(int(date[0]),int(date[1]), int(date[2]), int(time[0]), 0, 0)
+    date_time.replace(microsecond=0)
+    date_time.replace(second=0)
+    date_time.replace(minute=0)
+    if not appointments.filter(appointmentDateSlot=date_time).exists():
+        return date_time
 
-    for i in range(hour,END_HRS):
-        # Create a datetime object for each slot
-        slot = datetime.datetime(today.year, today.month, today.day, i, 0, 0)
-            # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            available_slots.append(slot)
-    for i in range(START_HRS,END_HRS):
-        # Create a datetime object for each slot
-        slot = datetime.datetime(next_day.year, next_day.month, next_day.day, i, 0, 0)
-        # Check if the slot is already booked
-        if not appointments.filter(appointmentDateSlot=slot).exists():
-            available_slots.append(slot)
-
-    return available_slots[0]
+    return None
 
 @login_required(login_url='/frontdesklogin')
 @user_passes_test(is_frontdesk, login_url='/frontdesklogin')
@@ -590,15 +610,15 @@ def contactus_view(request):
             email = sub.cleaned_data['Email']
             name = sub.cleaned_data['Name']
             message = sub.cleaned_data['Message']
-            # send_mail(
-            #             str(name) + ', Welcome to Apollo Hospital',
-            #             'Thank you for contacting us. We will get back to you soon.',
-            #             settings.EMAIL_HOST_USER,
-            #             [email],
-            #             fail_silently=False,
-            #             auth_user=settings.EMAIL_HOST_USER,
-            #             auth_password=settings.EMAIL_HOST_PASSWORD
-            #         )
+            send_mail(
+                        str(name) + ', Welcome to Apollo Hospital',
+                        'Thank you for contacting us. We will get back to you soon.',
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                        auth_user=settings.EMAIL_HOST_USER,
+                        auth_password=settings.EMAIL_HOST_PASSWORD
+                    )
             messages.success(request, 'Your message has been sent successfully, you will be contacted soon.')
             return render(request, 'hospital/contactus.html')
         else:
